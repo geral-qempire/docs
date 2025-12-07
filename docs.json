@@ -1,11 +1,14 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "theme": "aspen",
+  "name": "AspenAI Docs",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#d69000",
+    "light": "#d69000",
+    "dark": "#d69000"
+  },
+  "appearance": {
+    "default": "light"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -14,7 +17,8 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "GETTING STARTED",
+            "icon": "https://mintlify-assets.b-cdn.net/compass-2.svg",
             "pages": [
               "index",
               "quickstart",
@@ -22,14 +26,14 @@
             ]
           },
           {
-            "group": "Essentials",
+            "group": "ESSENTIALS",
+            "icon": "https://mintlify-assets.b-cdn.net/star-2.svg",
             "pages": [
               "essentials/markdown",
               "essentials/code",
               "essentials/images",
               "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "essentials/navigation"
             ]
           }
         ]
