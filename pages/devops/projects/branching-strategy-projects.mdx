@@ -1,0 +1,70 @@
+---
+title: "Branching strategy"
+description: "Learn about the trunk-based branching strategy and branch naming conventions for projects"
+---
+
+Projects follow a **trunk-based branching strategy** where development happens directly on the `main` branch. This approach simplifies the workflow and enables faster deployments to project environments.
+
+## Main Branch
+
+- **`main`**: The primary branch for all project changes. All development and deployments happen through this branch.
+
+<Info>
+Unlike modules and stacks which use Gitflow with `develop` and `main` branches, projects use a trunk-based approach where `main` is the single source of truth.
+</Info>
+
+## Branch Naming Conventions
+
+Projects use release branches for deploying to specific environments. These branches are temporary and are deleted after merging.
+
+### Release Branches
+
+Release branches are used to deploy changes to specific project environments (dev, qa, prd). They follow the format:
+
+**Format**: `release/<project-name>/<env>/<action>`
+
+**Examples**:
+- `release/example-project/dev/bump-stack-version`
+- `release/example-project/qa/update-tags`
+- `release/example-project/prd/add-storage-account`
+
+<Info>
+The `<env>` component identifies the target environment (dev, qa, or prd), and `<action>` describes the change being made (e.g., "bump-stack-version", "update-tags", "add-new-resource").
+</Info>
+
+### Branch Naming Best Practices
+
+- Use lowercase letters and hyphens for multi-word names
+- Be descriptive but concise in the action name
+- Always include the project name and environment
+- Use clear action names that indicate what changes are being made
+
+<Tip>
+Descriptive action names help team members quickly understand what changes are being deployed to each environment.
+</Tip>
+
+## Workflow Overview
+
+1. Create a release branch from `main` targeting a specific environment
+2. Make your changes and validate them through staging
+3. Open a pull request to `main`
+4. After approval and merge, changes are automatically deployed to the target environment
+
+<Info>
+For detailed step-by-step instructions, see the [Deploy/Update Workflow](/devops/projects/workflow-deploy-projects) page.
+</Info>
+
+## Key Differences from Modules & Stacks
+
+| Aspect | Projects | Modules & Stacks |
+|--------|----------|------------------|
+| **Strategy** | Trunk-based (main only) | Gitflow (develop + main) |
+| **Feature branches** | Not used | Used for new features |
+| **Bugfix branches** | Not used | Used for bug fixes |
+| **Hotfix branches** | Not used | Used for critical fixes |
+| **Release branches** | Used for environment deployments | Used for version releases |
+
+<Warning>
+Projects do not use feature, bugfix, or hotfix branches. All changes go through release branches that target specific environments.
+</Warning>
+

@@ -1,0 +1,82 @@
+---
+title: "Introduction"
+description: "Overview of DevOps standards and practices for terraform modules, stacks, and projects"
+---
+
+This documentation outlines the DevOps standards and practices used across our terraform modules, stacks, and projects repositories. Following these conventions ensures consistency, enables automation, and maintains high code quality across all infrastructure repositories.
+
+## Where to Start
+
+Get started by understanding our core standards and branching strategies:
+
+<CardGroup cols={2}>
+<Card
+  title="Versioning"
+  icon="tag"
+  href="standards-practices/versioning"
+>
+Learn about semantic versioning and automated release management using techpivot/terraform-module-releaser@v1
+</Card>
+
+<Card
+  title="Commits"
+  icon="file-code"
+  href="standards-practices/commit-conventions"
+>
+Follow Conventional Commits format to enable automated versioning and maintain clear commit history
+</Card>
+
+<Card
+  title="Modules & Stacks Branching"
+  icon="puzzle"
+  href="modules-stacks/gitflow-branching"
+>
+Learn about the Gitflow workflow and branch naming conventions for modules and stacks
+</Card>
+
+<Card
+  title="Projects Branching"
+  icon="box-arrow-up"
+  href="projects/branching-strategy-projects"
+>
+Learn about the trunk-based branching strategy and branch naming conventions for projects
+</Card>
+</CardGroup>
+
+## Workflows
+
+Follow these step-by-step workflows for developing, releasing, and deploying:
+
+<CardGroup cols={2}>
+<Card
+  title="Feature Development Workflow"
+  icon="code-branch"
+  href="modules-stacks/workflow-develop-modules-stacks"
+>
+Step-by-step workflow for feature and bugfix branches merging into develop for modules and stacks
+</Card>
+
+<Card
+  title="Release Workflow"
+  icon="rocket"
+  href="modules-stacks/workflow-release-modules-stacks"
+>
+Step-by-step workflow for release branches merging into main for modules and stacks
+</Card>
+
+<Card
+  title="Hotfix Workflow"
+  icon="bolt"
+  href="modules-stacks/workflow-hotfix-modules-stacks"
+>
+Step-by-step workflow for hotfix branches merging into main for modules and stacks
+</Card>
+
+<Card
+  title="Deploy/Update Projects"
+  icon="cloud-arrow-up"
+  href="projects/workflow-deploy-projects"
+>
+Complete workflow for deploying and updating projects using staging and real environment validation
+</Card>
+</CardGroup>

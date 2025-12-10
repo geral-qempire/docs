@@ -1,0 +1,166 @@
+---
+title: "Deploy/Update workflow"
+description: "Complete workflow for deploying and updating projects using staging and real environment validation"
+---
+
+## Overview
+
+When deploying or updating projects, you'll create release branches targeting specific environments (dev, qa, or prd), validate changes through staging environments, and deploy to real project infrastructure after approval and merge.
+
+<Info>
+Projects use a trunk-based branching strategy where all changes go through release branches that merge to `main`. For more details on the branching strategy, see the [Projects Branching Strategy](/devops/projects/branching-strategy-projects) page.
+</Info>
+
+<Info>
+This workflow uses a two-plan system: one plan runs automatically on a staging project (agnostic and auto-triggered on PR), and another plan runs on the real environment that you configure for each new environment.
+</Info>
+
+<Warning>
+Changes merged to `main` will be automatically applied to the real project environment. Ensure all staging validation and approvals are complete before merging.
+</Warning>
+
+## File Structure
+
+Each project environment folder should follow this structure:
+
+```
+projects/
+  <project-name>/
+    <env>/
+      backend.tf             # Backend configuration for real environment
+      main.tf                # Main Terraform configuration
+      outputs.tf             # Output definitions
+      terraform.tfvars       # Variable values
+      variables.tf           # Variable definitions
+      versions.tf            # Terraform and provider versions
+      backend-stage.hcl      # Backend override for staging environment deployments
+```
+
+<Info>
+The `backend-stage.hcl` file at the project root overrides the `backend.tf` configuration in the staging project, allowing staging deployments to use a separate state backend.
+</Info>
+
+## Workflow Steps
+
+<Steps>
+<Step title="Create Release Branch">
+Create a new branch following the naming convention:
+
+- **Branch format**: `release/<project-name>/<env>/<action>`
+- **Examples**:
+  - `release/example-project/dev/bump-stack-version`
+  - `release/example-project/qa/update-stack-tier`
+  - `release/example-project/prd/first-deployment`
+
+<Tip>
+Use descriptive action names that clearly indicate what changes you're making, such as "bump-stack-version", "update-tags", or "add-new-resource".
+</Tip>
+</Step>
+
+<Step title="Create Pull Request to Main">
+Open a pull request targeting the `main` branch. Include:
+
+Env0 will automatically start a plan:
+
+<Frame>
+<img src="/images/project-pr-plan.png" alt="GitHub env0 plan for project PR showing both staging and real environment plans" />
+</Frame>
+</Step>
+
+<Step title="Develop and Validate">
+Develop your changes and validate them iteratively:
+
+1. **Make your changes**
+
+   Make your changes and comit them to your branch.
+
+2. **Review staging plan results**
+
+   Env0 automatically runs a plan on new comits. Review the impact of your changes in the env0 plan.
+   
+   <Frame>
+   <img src="/images/project-stage-plan-result.png" alt="Review staging plan environment results for project" />
+   </Frame>
+
+3. **Apply to staging environment**
+
+   You can freely apply changes to the staging environment by adding a PR comment with:
+   
+   ```bash
+   env0 apply --path <project glob pattern>
+   ```
+   
+   <Info>
+   Applying to staging is optional and can be done freely without approvals. This allows you to test infrastructure changes in a safe staging environment before deploying to the real project.
+   </Info>
+
+4. **Repeat cycle**
+
+   Continue making changes, committing, reviewing plans, and applying to staging as needed until you are satisfied with the results.
+
+   <Frame>
+   <img src="/images/project-checks-pass.png" alt="Iterative infrastructure development workflow with plan and staging apply" />
+   </Frame>
+
+   <Tip>
+   Use the staging environment to iterate quickly and validate your changes without affecting real infrastructure. Only proceed to review request once both staging and real environment plans are satisfactory.
+   </Tip>
+</Step>
+
+<Step title="Request Review">
+Once the staging plan check has passed you can request a review from team members.
+
+
+- Request review from team members
+- Add reviewers to the pull request
+- Provide context about the changes and validation performed
+<Note>
+Applying to the env0 staging environment is strongly recommended to catch issues early, but not mandatory for deployment.
+</Note>
+
+<Warning>
+Do not request review until the staging plan check has passed.
+</Warning>
+
+</Step>
+
+<Step title="Merge and Auto-Deploy">
+After receiving approval:
+
+1. Merge the pull request into `main`
+
+<Check>
+Once merged to `main`, env0 will automatically apply the changes to the real project environment. No manual intervention is required for the real environment deployment.
+</Check>
+
+<Warning>
+Be prepared to monitor the apply process and handle any failures that may occur.
+</Warning>
+</Step>
+
+<Step title="Clean Up and Verify">
+After successful merge and deployment:
+
+1. **Delete staging environment**
+
+2. **Delete release branch**
+
+3. **Verify real environment deployment in env0 and cloud provider portal**
+
+<Tip>
+Cleaning up staging environments and branches helps keep the repository organized and reduces resource usage. Always verify deployments completed successfully before cleaning up.
+</Tip>
+</Step>
+
+<Step title="Handle Failures">
+If the real environment apply fails after merge:
+
+- Open a new pull request to fix the issue
+- Follow the same workflow to deploy the fix
+- Investigate the root cause and document lessons learned
+
+<Warning>
+If the real environment deployment fails, immediately open a new PR to address the issue. Do not leave broken infrastructure in production environments.
+</Warning>
+</Step>
+</Steps>

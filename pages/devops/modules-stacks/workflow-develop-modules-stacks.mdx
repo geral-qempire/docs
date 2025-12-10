@@ -1,0 +1,145 @@
+---
+title: "Feature workflow"
+description: "Step-by-step workflow for feature and bugfix branches merging into develop for modules and stacks"
+---
+
+This workflow covers the process for developing features and bugfixes for modules and stacks, testing them, and merging them into the `develop` branch.
+
+## Overview
+
+When working on modules or stacks, you'll create feature or bugfix branches, develop and test your changes in dedicated test folders, and merge them into `develop` after review and approval.
+
+<Info>
+This workflow is specifically for modules and stacks. Projects follow a different workflow process.
+</Info>
+
+## Workflow Steps
+
+<Steps>
+<Step title="Create Feature or Bugfix Branch">
+Create a new branch following the naming convention:
+
+- **Modules/Stacks format**: `<action>/<name>/<message>`
+- **Examples**:
+  - `feature/az_storage_account/add-blob-versioning`
+  - `bugfix/resource_group_stack/fix-rbac-assignment`
+
+<Tip>
+Use descriptive branch names that clearly indicate the module/stack and the change being made.
+</Tip>
+</Step>
+
+<Step title="Open Pull Request to Develop">
+Open a pull request targeting the `develop` branch. Include:
+
+- Clear description of changes
+- Reference to any related issues or tickets
+- Summary of testing performed
+
+Env0 will automatically start a plan.
+
+<Info>
+The env0 will plan the module inside the pre cofigured staging project.
+</Info>
+
+<Frame>
+<img src="/images/module-stack-feat-plan.png" alt="GitHub env0 plan for release PR" />
+</Frame>
+</Step>
+
+<Step title="Development and Test">
+Follow this iterative development process:
+
+<Accordion title="Test Folder Information">
+Develop your changes and test them in the appropriate test folder:
+
+- **Modules**: `modules/<module_name>/tests/`
+- **Stacks**: `stacks/<stack_name>/tests/`
+
+The test folder should contain the files you use to deploy the module during development. These files typically include:
+- `main.tf` - Configuration that uses your module or stack
+- `variables.tf` - Variable definitions
+- `outputs.tf` - Output values for the module or stack
+- `terraform.tfvars` - Variable values for testing
+- `providers.tf` - Provider configuration
+- `versions.tf` - Terraform version constraints
+- `backend.tf` - Backend configuration for remote state management
+
+<Warning>
+Always test your changes in the dedicated test folders before opening a pull request. This ensures your module or stack works correctly in isolation.
+</Warning>
+
+<Info>
+Keep in mind that env0 will automatically run a plan using the files inside this tests folder when you open a pull request. Ensure your test folder contains all necessary files and configurations for a successful Terraform plan.
+</Info>
+</Accordion>
+
+**Development Steps:**
+
+1. **Make changes and commit code**
+
+    Develop your module or stack and comit your changes to your branch.
+
+2. **Check env0 plan**
+   
+   Review the Terraform plan results in the GitHub PR interface.
+   Verify the plan shows expected changes.
+   Check for any **errors or unexpected modifications.**
+
+    <Frame>
+      <img src="/images/module-stack-feat-plan-fail.png" alt="Module/Stack Development Workflow Overview" />
+    </Frame>
+
+3. **Optional: env0 apply to stage environment**
+   
+   If needed, apply the changes to a staging environment for further testing.
+   ```bash
+   env0 apply --path <project glob pattern>
+   ```
+
+4. **Repeat until reached expected behavior**
+   
+   Iterate until the plan shows the desired state and all validations pass.
+
+   <Frame>
+      <img src="/images/module-stack-checks-pass.png" alt="Module/Stack Development Workflow Overview" />
+    </Frame>
+
+<Warning>
+**Important**: The env0 plan check must be green (passing) before requesting reviews. Do not request review until all checks have passed.
+</Warning>
+</Step>
+
+<Step title="Request Review">
+Once all checks pass, request review from team members:
+
+- Add reviewers to the pull request
+- Provide context about the changes
+- Be available to answer questions
+
+</Step>
+
+<Step title="Merge and Clean Up">
+After receiving approval:
+
+1. Merge the pull request into `develop`
+2. Delete the feature/bugfix branch
+3. Delete env0 environments if any were created.
+
+<Check>
+Once merged to `develop`, the changes will be included in the next release branch that merges to `main`.
+</Check>
+</Step>
+</Steps>
+
+## Best Practices
+
+- Always test in the dedicated test folders before opening PRs
+- Keep PRs focused on a single feature or bugfix
+- Delete feature/bugfix branches after successful merge
+- Document any breaking changes or special considerations
+- Review Terraform plans carefully before requesting review
+
+<Tip>
+Following this workflow ensures code quality, proper testing, and smooth integration into the develop branch.
+</Tip>

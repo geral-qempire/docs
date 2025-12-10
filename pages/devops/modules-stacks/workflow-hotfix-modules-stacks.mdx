@@ -1,0 +1,158 @@
+---
+title: "Hotfix workflow"
+description: "Step-by-step workflow for hotfix branches merging into main for modules and stacks"
+---
+
+This workflow covers the process for handling critical production fixes that need to be applied immediately, bypassing the normal development process for modules and stacks.
+
+## Overview
+
+Hotfix branches are used for critical production fixes that need to be applied immediately. They are created directly from `main` and bypass the normal development cycle.
+
+<Warning>
+Hotfixes should only be used for critical production issues that cannot wait for the normal release cycle. Changes merged to `main` are production-ready and will be deployed.
+</Warning>
+
+## Hotfix Branch Steps
+
+<Steps>
+<Step title="Create Hotfix Branch from Main">
+Create a hotfix branch directly from `main`:
+
+- **Modules/Stacks format**: `hotfix/<name>/<message>`
+- **Examples**:
+  - `hotfix/az_private_endpoint/fix-security-issue`
+  - `hotfix/storage_account_stack/fix-rbac-assignment`
+
+<Warning>
+Hotfixes should only be used for critical production issues that cannot wait for the normal release cycle.
+</Warning>
+</Step>
+
+<Step title="Open Pull Request to Main">
+Open a pull request targeting the `main` branch.
+
+The release action will perform an automatic summary.
+
+<Frame>
+<img src="/images/module-stack-release-plan.png" alt="GitHub env0 plan for release PR" />
+</Frame>
+
+Env0 will automatically start a plan affected modules/stacks.
+
+<Frame>
+<img src="/images/module-stack-release-pr-plan.png" alt="GitHub env0 plan for release PR" />
+</Frame>
+
+</Step>
+
+<Step title="Fix and Test">
+Follow this iterative fix process:
+
+<Accordion title="Test Folder Information">
+Develop your changes and test them in the appropriate test folder:
+
+- **Modules**: `modules/<module_name>/tests/`
+- **Stacks**: `stacks/<stack_name>/tests/`
+
+The test folder should contain the files you use to deploy the module during development. These files typically include:
+- `main.tf` - Configuration that uses your module or stack
+- `variables.tf` - Variable definitions
+- `outputs.tf` - Output values for the module or stack
+- `terraform.tfvars` - Variable values for testing
+- `providers.tf` - Provider configuration
+- `versions.tf` - Terraform version constraints
+- `backend.tf` - Backend configuration for remote state management
+
+<Warning>
+Always test your changes in the dedicated test folders before opening a pull request. This ensures your module or stack works correctly in isolation.
+</Warning>
+
+<Info>
+Keep in mind that env0 will automatically run a plan using the files inside this tests folder when you open a pull request. Ensure your test folder contains all necessary files and configurations for a successful Terraform plan.
+</Info>
+</Accordion>
+
+**Development Steps:**
+
+1. **Make changes and commit code**
+
+    Develop your module or stack and comit your changes to your branch.
+
+2. **Check env0 plan**
+   
+   Review the Terraform plan results in the GitHub PR interface.
+   Verify the plan shows expected changes.
+   Check for any **errors or unexpected modifications.**
+
+3. **Env0 apply to stage environment**
+   
+   Apply the changes to a staging environment for further testing.
+   ```bash
+   env0 apply --path <project glob pattern>
+   ```
+
+4. **Repeat until reached expected behavior**
+   
+   Iterate until the plan shows the desired state and all validations pass.
+
+<Warning>
+**Important**: The env0 plan check must be green (passing) before requesting reviews. Do not request review until all checks have passed.
+</Warning>
+
+<Tip>
+Even for urgent fixes, proper testing is essential to avoid introducing additional issues. Verify the fix resolves the production issue and ensure no regressions are introduced.
+</Tip>
+</Step>
+
+<Step title="Review and Validate">
+Review the hotfix:
+
+- Verify all resources are created correctly
+- Test functionality and ensure it works as intended
+- Check for any deployment errors or warnings
+- Validate that the infrastructure matches the expected state
+
+<Frame>
+  <img src="/images/module-stack-release-checks-pass.png" alt="Request Approval Screenshot" />
+</Frame>
+
+</Step>
+
+<Step title="Get Approval">
+
+Request approval after all plan and stage deploy checks have passed.
+
+Obtain required approvals:
+
+- Code review approval
+- Release manager approval (if applicable)
+- Successful env0 apply to staging
+- Any other required sign-offs
+
+<Warning>
+Hotfixes require additional scrutiny. Ensure all stakeholders have reviewed and approved before merging. Hotfix PRs may follow an expedited review process, but all standard checks including env0 apply must still pass.
+</Warning>
+</Step>
+
+<Step title="Merge to Main">
+After approval merge the hotfix branch into `main`.
+
+<Check>
+The terraform-module-releaser automatically determines versions and generates changelogs from your commit messages. No manual version or changelog management is required.
+</Check>
+
+<Warning>
+Remember to merge hotfixes back into `develop` to ensure the fix is included in future releases.
+</Warning>
+</Step>
+
+<Step title="Clean Up">
+After successful deployment:
+
+1. Destroy the env0 release staging environment
+2. Delete the hotfix branch
+
+</Step>
+</Steps>
+

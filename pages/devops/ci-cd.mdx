@@ -1,0 +1,48 @@
+---
+title: "CI/CD Integration"
+description: "Learn about env0 GitHub integration for automated Terraform plans and applies"
+---
+
+We use **env0 GitHub integration** to streamline Terraform workflows and provide seamless infrastructure management directly from GitHub.
+
+## Automated Plans on Pull Requests
+
+The env0 GitHub integration automatically runs Terraform plans when pull requests are opened or updated. This provides:
+
+- **Automatic validation**: Every PR triggers a Terraform plan to validate infrastructure changes
+- **Early feedback**: Catch potential issues before merging
+- **Plan visibility**: View plan results directly in the GitHub PR interface
+- **Cost estimation**: Understand infrastructure cost implications before deployment
+
+<Info>
+Terraform plans run automatically for all pull requests, giving you immediate feedback on infrastructure changes without manual intervention.
+</Info>
+
+## Direct Apply from GitHub
+
+The env0 integration allows you to apply Terraform changes directly from GitHub:
+
+- **Apply from PR comments**: Trigger applies using GitHub comments or PR actions
+- **Approval workflows**: Configure approval requirements for production environments
+- **Audit trail**: All applies are tracked and logged for compliance
+- **Environment management**: Manage multiple environments (dev, qa, prod) with appropriate controls
+
+<Tip>
+Direct apply capabilities streamline the deployment process while maintaining proper controls and audit trails for infrastructure changes.
+</Tip>
+
+## Detailed Workflows
+
+For step-by-step workflow procedures, see our detailed workflow documentation:
+
+### Modules & Stacks
+
+- **[Feature Workflow](/devops/modules-stacks/workflow-develop-modules-stacks)**: Complete process for feature and bugfix branches merging into `develop` for modules and stacks
+- **[Release Workflow](/devops/modules-stacks/workflow-release-modules-stacks)**: Process for release branches merging into `main` for modules and stacks
+- **[Hotfix Workflow](/devops/modules-stacks/workflow-hotfix-modules-stacks)**: Process for hotfix branches merging into `main` for modules and stacks
+
+### Projects
+
+- **[Deploy/Update Workflow](/devops/projects/workflow-deploy-projects)**: Complete workflow for deploying and updating projects to development, quality assurance, and production environments
+
+These workflows cover how to use env0 for plans, applies, and infrastructure management throughout the development lifecycle.

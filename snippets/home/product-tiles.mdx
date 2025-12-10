@@ -45,7 +45,16 @@ export const ProductTiles = ({ categories, hideButtons = false }) => {
                     : ''
                     }`}
                 >
-                  <div className="text-xl mr-3 mt-1"><img src={item.icon} alt={item.title} className="w-8 h-8" /></div>
+                  <div className="text-xl mr-3 mt-1">
+                    {typeof item.icon === 'string' ? (
+                      <img src={item.icon} alt={item.title} className="w-8 h-8" />
+                    ) : (
+                      <>
+                        <img src={item.icon.light} alt={item.title} className="block dark:hidden w-8 h-8" />
+                        <img src={item.icon.dark} alt={item.title} className="hidden dark:block w-8 h-8" />
+                      </>
+                    )}
+                  </div>
                   <div className="flex-1">
                     <h3 className="font-medium text-base text-black dark:text-white">
                       {item.title}

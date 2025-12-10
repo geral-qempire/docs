@@ -1,0 +1,68 @@
+---
+title: "Commits"
+description: "Learn about Conventional Commits format and how commit messages impact automated versioning"
+---
+
+We follow the **Conventional Commits** specification for all commit messages. This standard format enables automated tooling and makes commit history more readable and useful.
+
+## Commit Message Format
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+## Commit Types
+
+- **`feat`**: A new feature
+- **`fix`**: A bug fix
+- **`chore`**: Changes to build process or auxiliary tools
+- **`docs`**: Documentation only changes
+- **`refactor`**: Code change that neither fixes a bug nor adds a feature
+- **`test`**: Adding or updating tests
+- **`style`**: Changes that do not affect the meaning of the code (formatting, missing semicolons, etc.)
+- **`perf`**: A code change that improves performance
+
+## Commit Message Examples
+
+```bash
+feat(modules): add storage account module with versioning support
+
+fix(stacks): resolve RBAC profile assignment issue
+
+chore: update terraform version to 1.5.0
+
+docs(readme): update installation instructions
+
+refactor(modules): simplify private endpoint module structure
+
+test(modules): add integration tests for storage account module
+```
+
+## Scope
+
+The scope is optional and should be the name of the module, stack, or component affected. Examples:
+- `feat(az_storage_account): add encryption support`
+- `fix(resource_group_stack): resolve location conflict`
+- `docs(az_rbac_profile_assignment): update role assignment section`
+
+<Warning>
+Commit messages directly impact versioning. The terraform-module-releaser analyzes commit messages to determine version increments, so use the correct type keywords (`feat`, `fix`, etc.) to ensure proper versioning.
+</Warning>
+
+## Breaking Changes
+
+For breaking changes, include `BREAKING CHANGE:` in the footer or use `!` after the type/scope:
+
+```bash
+feat(az_storage_account)!: change authentication method
+
+BREAKING CHANGE: Storage account authentication now requires managed identity instead of access keys
+```
+
+<Info>
+Breaking changes will trigger a major version increment when using the terraform-module-releaser. See the [Versioning Standards](/devops/standards-practices/versioning) page for more details.
+</Info>

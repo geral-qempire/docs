@@ -1,0 +1,51 @@
+---
+title: "Versioning"
+description: "Learn about semantic versioning and automated release management for terraform modules, stacks, and projects"
+---
+
+We use **Semantic Versioning (SemVer)** for all releases across our terraform modules, stacks, and projects repositories. Semantic versioning follows the format `MAJOR.MINOR.PATCH`:
+
+- **MAJOR**: Breaking changes that are incompatible with previous versions
+- **MINOR**: New features added in a backward-compatible manner
+- **PATCH**: Backward-compatible bug fixes
+
+<Info>
+Semantic versioning helps consumers of our modules understand the impact of updates and make informed decisions about when to upgrade.
+</Info>
+
+## Automated Release Management
+
+We use **[techpivot/terraform-module-releaser@v1](https://github.com/marketplace/actions/terraform-module-releaser)** as our automated releaser for terraform modules, stacks, and projects repositories. This GitHub Action:
+
+- **Automatically determines versions** based on commit messages in the pull request
+- **Automatically generates changelogs** from commit messages
+- Creates git tags following semantic versioning
+- Generates GitHub releases with the auto-generated changelog
+- Runs on pull requests targeting the `main` branch
+
+The releaser analyzes commit messages to automatically determine version increments:
+- **Major version**: Triggered by keywords like "breaking change" or "major"
+- **Minor version**: Triggered by keywords like "feat" or "feature"
+- **Patch version**: Triggered by keywords like "fix", "chore", or "docs"
+
+<Info>
+You don't need to manually specify version numbers or create changelogs. The releaser automatically determines the appropriate version and generates the changelog from your commit messages when the PR is merged to `main`.
+</Info>
+
+<Tip>
+The releaser workflow is configured in `.github/workflows/terraform-module-releaser.yml` in each repository. You can customize keywords and behavior in the workflow file if needed.
+</Tip>
+
+## Breaking Changes
+
+Breaking changes trigger a major version increment when using the terraform-module-releaser. To indicate a breaking change in your commit message, include `BREAKING CHANGE:` in the footer or use `!` after the type/scope:
+
+```bash
+feat(az_storage_account)!: change authentication method
+
+BREAKING CHANGE: Storage account authentication now requires managed identity instead of access keys
+```
+
+<Warning>
+Breaking changes will trigger a major version increment, which may require consumers of your modules to update their code. Use breaking changes carefully and communicate them clearly.
+</Warning>

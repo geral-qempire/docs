@@ -1,0 +1,68 @@
+---
+title: "Branching Strategy"
+description: "Learn about the Gitflow workflow and branch naming conventions for modules and stacks"
+---
+
+We follow the **Gitflow** branching model to manage our development workflow. Gitflow provides a robust framework for managing features, releases, and hotfixes.
+
+## Main Branches
+
+- **`main`**: The production-ready branch. Code in this branch is always deployable and represents the current production state.
+- **`develop`**: The integration branch for development. All feature branches are merged here before being released to production.
+
+## Supporting Branches
+
+- **Feature branches**: New functionality developed in isolation
+- **Bugfix branches**: Fixes for bugs found in the develop branch
+- **Hotfix branches**: Critical fixes that need to be applied directly to production
+- **Release branches**: Preparation for a new production release
+
+<Note>
+All supporting branches are temporary and should be deleted after merging into their target branches.
+</Note>
+
+## Branch Naming Conventions
+
+We use standardized prefixes for branch names to clearly communicate the purpose of each branch. All branch names should follow these conventions:
+
+### Branch Prefixes
+
+- **`feature/`**: New features or enhancements
+  - Example: `feature/az_storage_account/add-blob-versioning`
+
+- **`bugfix/`**: Bug fixes for issues in the develop branch
+  - Example: `bugfix/az_rbac_profile_assignment/fix-role-assignment`
+
+- **`hotfix/`**: Critical production fixes that bypass the normal development process
+  - Example: `hotfix/az_private_endpoint/fix-security-issue`
+
+- **`release/`**: Preparation branches for new production releases
+  - Example: `release/20241215-add-encryption-support`
+
+### Branch Naming Format
+
+Our repositories are organized as **monorepos**, containing multiple modules and stacks. Branch names must reference the specific component being modified to clearly identify the scope of changes.
+
+Most branches follow the format: `<action>/<name>/<message>`
+
+- `feature/az_storage_account/add-encryption-support`
+- `bugfix/az_rbac_profile_assignment/fix-role-assignment`
+- `feature/az_private_endpoint/add-service-integration`
+- `bugfix/resource_group_stack/fix-rbac-assignment`
+- `hotfix/storage_account_stack/fix-security-vulnerability`
+
+Release branches follow a different format: `release/<YYYYMMDD>-<short-desc>`
+
+- `release/20241215-add-encryption-support`
+- `release/20241220-fix-rbac-issue`
+
+### Branch Naming Best Practices
+
+- Use lowercase letters and hyphens for multi-word names
+- Be descriptive but concise
+- Include ticket numbers if your project uses them (e.g., `feature/TICKET-123-add-feature`)
+- Avoid special characters and spaces
+
+<Tip>
+Consistent branch naming makes it easier to filter and search branches, and helps team members quickly understand the purpose of each branch.
+</Tip>

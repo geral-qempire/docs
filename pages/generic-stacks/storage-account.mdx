@@ -1,0 +1,178 @@
+---
+title: "Storage Account Stack"
+description: "Deploy Azure Storage Accounts with configurable tiers, role profiles, alerts, and lifecycle management"
+---
+
+The Storage Account stack provides a comprehensive solution for deploying Azure Storage Accounts with pre-configured tiers, role-based access control, monitoring alerts, and automated lifecycle management.
+
+## Role Profiles
+
+Role profiles define what permissions are granted to principals. Choose the profiles that match your access requirements.
+
+<CardGroup cols={3}>
+<Card
+  title="Write Access Profile"
+  icon="pencil"
+>
+Grants full read and write access to all storage services (Blob, File, Queue, Table) plus Reader role for the storage account.
+</Card>
+
+<Card
+  title="Read Access Profile"
+  icon="eye"
+>
+Grants read-only access to all storage services (Blob, File, Queue, Table) plus Reader role for the storage account.
+</Card>
+
+<Card
+  title="Alert Access Profile"
+  icon="bell"
+>
+Grants BDSO Alert Operator role for monitoring and managing alerts on the storage account.
+</Card>
+</CardGroup>
+
+### Write Access Profile Roles
+
+| Role | Description |
+|------|-------------|
+| **Storage Blob Data Contributor** | Full access to blob containers and data |
+| **Storage File Data SMB Share Contributor** | Full access to file shares |
+| **Storage Queue Data Contributor** | Full access to queues and messages |
+| **Storage Table Data Contributor** | Full access to tables and entities |
+| **Reader** | Read access to the storage account resource |
+
+### Read Access Profile Roles
+
+| Role | Description |
+|------|-------------|
+| **Storage Blob Data Reader** | Read-only access to blob containers and data |
+| **Storage File Data SMB Share Reader** | Read-only access to file shares |
+| **Storage Queue Data Reader** | Read-only access to queues and messages |
+| **Storage Table Data Reader** | Read-only access to tables and entities |
+| **Reader** | Read access to the storage account resource |
+
+### Alert Access Profile Roles
+
+| Role | Description |
+|------|-------------|
+| **BDSO Alert Operator** | Access to view and manage alerts on the storage account |
+
+## Storage Tiers (Baseline)
+
+Storage tiers define the replication strategy and retention policies for your storage account. Choose based on your availability and durability requirements.
+
+| Tier | Replication | Blob Retention | Container Retention | Geo Priority | Use Case |
+|------|-------------|----------------|---------------------|--------------|----------|
+| **Bronze** | LRS (Locally Redundant) | 7 days | 7 days | No | Development, non-critical data |
+| **Silver** | ZRS (Zone Redundant) | 30 days | 30 days | No | Production workloads, single region |
+| **Gold** | GZRS (Geo-Zone Redundant) | 30 days | 30 days | No | Production workloads, multi-region |
+| **Platinum** | GZRS (Geo-Zone Redundant) | 30 days | 30 days | Yes | Critical workloads, optimized failover |
+| **Diamond** | RAGZRS (Read-Access Geo-Zone Redundant) | 30 days | 30 days | Yes | Mission-critical, read access from secondary |
+
+<Info>
+**Replication Types Explained:**
+- **LRS**: Data replicated 3 times within a single datacenter
+- **ZRS**: Data replicated across 3 availability zones in a single region
+- **GZRS**: Data replicated across 3 availability zones in primary region + 1 copy in secondary region
+- **RAGZRS**: Same as GZRS but with read access to secondary region
+</Info>
+
+## Smart Lifecycle Tiers
+
+Smart lifecycle management automatically moves blobs between access tiers (Hot → Cool → Cold → Archive) based on access patterns to optimize costs.
+
+| Tier | Hot to Cool | Cool to Cold | Description |
+|------|-------------|--------------|-------------|
+| **Off** (`false`) | - | - | No automatic tier movement |
+| **On** (`true`) | 30 days | 90 days | Standard lifecycle management |
+| **Override** | Custom | Custom | Fully customizable schedule |
+
+<Info>
+Lifecycle management uses the last access time to determine when to move blobs. Blobs that haven't been accessed for the specified number of days are automatically moved to a cooler (cheaper) tier.
+</Info>
+
+## Versioning Tiers
+
+Versioning tiers control blob versioning and retention policies. When enabled, every update to a blob creates a new version that can be retained for recovery.
+
+| Tier | Versioning | Retention Period | Cool Tier After | Use Case |
+|------|------------|------------------|-----------------|----------|
+| **Bronze** | Disabled | - | - | No version history needed |
+| **Silver** | Enabled | 14 days | - | Short-term version history |
+| **Gold** | Enabled | 30 days | - | Standard version history |
+| **Platinum** | Enabled | 60 days | 30 days | Extended version history with cost optimization |
+| **Diamond** | Enabled | 90 days | 30 days | Long-term version history with cost optimization |
+
+<Info>
+**Versioning Benefits:**
+- Recover from accidental overwrites or deletions
+- Maintain point-in-time recovery
+- Cool tier moves old versions to cheaper storage after specified days
+</Info>
+
+## Alert Options
+
+Enable monitoring alerts for different aspects of your storage account. Alerts are organized by service area.
+
+<CardGroup cols={2}>
+<Card
+  title="Base Alerts"
+  icon="server"
+>
+Account-level alerts for availability, capacity, and ingress/egress traffic.
+</Card>
+
+<Card
+  title="Blob Alerts"
+  icon="database"
+>
+Blob service specific alerts for capacity and latency.
+</Card>
+
+<Card
+  title="File Alerts"
+  icon="folder"
+>
+File service alerts for availability, throttling, capacity, and governance.
+</Card>
+
+<Card
+  title="Queue Alerts"
+  icon="list"
+>
+Queue service alerts for capacity, backlog, and governance.
+</Card>
+</CardGroup>
+
+## Private Endpoint Options
+
+Private endpoints provide secure, private connectivity to your storage account services without traversing the public internet.
+
+| Option | Service | Description |
+|--------|---------|-------------|
+| **Blob** | Blob Storage | Private access to blob containers |
+| **File** | File Shares | Private access to file shares (SMB/NFS) |
+| **Queue** | Queue Storage | Private access to queues |
+| **Table** | Table Storage | Private access to tables |
+
+## Configuration Summary
+
+Use these parameters to configure your storage account:
+
+| Parameter | Options | Description |
+|-----------|---------|-------------|
+| `storage_tier` | bronze, silver, gold, plat, diamond, override | Storage replication and retention tier |
+| `smart_lifecycle_tier` | false, true, override | Enable automatic blob tier movement |
+| `versioning_tier` | bronze, silver, gold, platinum, diamond, override | Blob versioning and retention policy |
+| `enable_base_alerts` | true, false | Enable account-level alerts |
+| `enable_blob_alerts` | true, false | Enable blob service alerts |
+| `enable_file_alerts` | true, false | Enable file service alerts |
+| `enable_queue_alerts` | true, false | Enable queue service alerts |
+| `enable_private_endpoint_blob` | true, false | Create private endpoint for blob service |
+| `enable_private_endpoint_file` | true, false | Create private endpoint for file service |
+| `enable_private_endpoint_queue` | true, false | Create private endpoint for queue service |
+| `enable_private_endpoint_table` | true, false | Create private endpoint for table service |
+| `write_access_principals` | List of principals | Assign write access profile |
+| `read_access_principals` | List of principals | Assign read access profile |
+| `alert_access_principals` | List of principals | Assign alert access profile |
