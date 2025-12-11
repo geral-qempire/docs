@@ -1,0 +1,174 @@
+---
+title: "Env0 Staging Projects"
+description: "Complete guide for setting up staging projects in env0 for project validation"
+---
+
+This guide walks you through setting up staging projects in env0 for validating infrastructure changes before deploying to real environments.
+
+## Setup Projects
+
+<Steps>
+<Step title="Create Stage Project">
+Create the main staging project in env0:
+
+1. Navigate to your organization in env0
+2. Click "New Project"
+3. Name it following the pattern: `<project-name>-stage`
+4. Complete the initial project setup
+
+<Frame>
+<img src="/images/env0-create-stage-project.png" alt="Creating a new staging project in env0" />
+</Frame>
+
+<Info>
+The staging project serves as the parent project that will contain sub-projects for each repository (modules, stacks, projects).
+</Info>
+</Step>
+
+<Step title="Create Sub Projects">
+Create sub-projects within the staging project for each repository:
+
+1. Within the staging project, create three sub-projects:
+   - `modules-staging`
+   - `stacks-staging`
+   - `projects-staging`
+
+2. Each sub-project will be configured separately for environment discovery
+
+<Frame>
+<img src="/images/env0-create-sub-projects.png" alt="Creating sub-projects for modules, stacks, and projects in env0" />
+</Frame>
+
+<Check>
+You should now have one main staging project with three sub-projects, one for each repository type.
+</Check>
+</Step>
+</Steps>
+
+## Environment Discovery
+
+For each project, set up environment discovery to automatically detect and manage environments.
+
+<Steps>
+
+<Step title="Enable Environment Discovery">
+Configure environment discovery for each sub-project:
+
+1. Navigate to the sub-project settings
+2. Go to "Environment Discovery" section
+3. Enable environment discovery
+4. **Choose the folder option** - This will detect environments based on folder structure in your repository
+<Frame>
+<img src="/images/env0-folder-discovery.png" alt="Creating sub-projects for modules, stacks, and projects in env0" />
+</Frame>
+</Step>
+
+<Step title="Choose IAC Type">
+Configure the Infrastructure as Code type:
+
+1. In the environment discovery settings, select "IAC Type"
+2. **Choose OpenTofu** as your IAC type
+3. **Resolve version from OpenTofu code** - This will automatically detect the OpenTofu version from your code files
+</Step>
+
+<Step title="Choose the Repository">
+Link the repository to the sub-project:
+
+1. In the repository configuration, **select the repo based on the project you are setting up**:
+   - For modules sub-project: Select `terraform-modules` repository
+   - For stacks sub-project: Select `terraform-stacks` repository
+   - For projects sub-project: Select `terraform-projects` repository
+
+<Note>
+A VCS connection must be configured beforehand in your env0 organization settings before you can select repositories.
+</Note>
+</Step>
+
+<Step title="Mapping">
+Configure the folder mapping for environment discovery:
+
+
+<Tabs>
+<Tab title="Modules">
+Configure mapping for the modules repository:
+
+- **Match Environments by glob pattern**: `modules/*/tests/*`
+- **Root Path**: Leave it blank
+
+</Tab>
+
+<Tab title="Stacks">
+Configure mapping for the stacks repository:
+
+- **Match Environments by glob pattern**: `stacks/*/tests/*`
+- **Root Path**: Leave it blank
+
+</Tab>
+
+<Tab title="Projects">
+Configure mapping for the projects repository:
+
+- **Match Environments by glob pattern**: `projects/*/*/*`
+- **Root Path**: Leave it blank
+
+</Tab>
+</Tabs>
+
+<Warning>
+This patterns only work if your repositories follow the file structure described in each repository.
+</Warning>
+
+</Step>
+
+<Step title="Configure Pull Request Environment Settings">
+Configure the pull request environment settings for each sub-project:
+
+1. Navigate to the sub-project settings
+2. Go to "Pull Request Environment Settings" section
+3. Configure the settings for how environments are created and managed for pull requests
+
+<Frame>
+<img src="/images/env0-pr-env-settings.png" alt="Configure Pull Request Environment Settings in env0" />
+</Frame>
+</Step>
+
+</Steps>
+
+## Project Settings
+
+For each project, configure these settings inside project settings:
+
+<Tabs>
+<Tab title="Project Settings > Policies">
+Configure deployment settings and checks:
+
+<Frame>
+<img src="/images/env0-project-deployment-settings.png" alt="env0 Policies - Deployment Settings Checks configuration" />
+</Frame>
+
+</Tab>
+
+<Tab title="Approval Policy">
+Configure automatic approval for stage plans:
+
+<Frame>
+<img src="/images/env0-project-approval-policy.png" alt="env0 Approval Policy - Approve Stage Plans Automatically configuration" />
+</Frame>
+
+</Tab>
+</Tabs>
+
+## Project Variables
+
+For the "projects" stage project, set up this environment variable:
+
+Configure the required environment variables for the projects staging sub-project:
+
+- **ENV0_TERRAFORM_BACKEND_CONFIG**: `backend-stage.hcl`
+
+<Frame>
+<img src="/images/env0-project-env-variable.png" alt="env0 Project Variables configuration for projects stage project" />
+</Frame>
+
+
+

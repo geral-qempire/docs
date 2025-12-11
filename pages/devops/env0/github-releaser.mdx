@@ -1,0 +1,198 @@
+---
+title: "GitHub Releaser"
+description: "Guide for setting up GitHub Actions releaser workflow for terraform modules, stacks, and projects"
+---
+
+The GitHub Releaser workflow uses `techpivot/terraform-module-releaser@v1` to automatically version and release modules, stacks, and projects based on conventional commits and pull request merges.
+
+## Overview
+
+The releaser workflow automatically:
+- Detects changes in your modules, stacks, or projects
+- Determines version bumps based on conventional commits
+- Creates tags and GitHub releases when PRs are merged to `main`
+- Excludes test files and terraform.tfvars from releases
+
+<Info>
+The workflow triggers on pull requests targeting the `main` branch and creates releases when PRs are merged (closed).
+</Info>
+
+## Setup
+
+Each repository requires a GitHub Actions workflow file at `.github/workflows/terraform-module-releaser.yml`. The configuration varies slightly based on the repository type.
+
+## Terraform Modules
+
+For the **terraform-modules** repository, configure the workflow to exclude test directories and terraform.tfvars files:
+
+```yaml .github/workflows/terraform-module-releaser.yml
+name: Terraform Module Releaser
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed] # closed is needed to release
+    branches:
+      - main
+
+permissions:
+  contents: write       # to push tags & create releases
+  pull-requests: write  # to comment on PRs
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Terraform Module Releaser
+        uses: techpivot/terraform-module-releaser@v1
+        with:
+          module-asset-exclude-patterns: "*terraform.tfvars,**/tests/**"
+          module-change-exclude-patterns: "*terraform.tfvars,**/tests/**"
+          module-path-ignore: "modules/*/tests,modules/*/tests/**"
+
+        # Optional customisation:
+        #   default-first-tag: "v1.0.0"
+        #   major-keywords: "breaking change,major"
+        #   minor-keywords: "feat,feature"
+        #   patch-keywords: "fix,chore,docs"
+```
+
+**Key Configuration:**
+- **module-path-ignore**: Excludes `modules/*/tests` directories from version detection
+- **module-asset-exclude-patterns**: Excludes terraform.tfvars and test files from release assets
+- **module-change-exclude-patterns**: Ignores changes to terraform.tfvars and test files when determining version bumps
+
+## Terraform Stacks
+
+For the **terraform-stacks** repository, configure the workflow similarly but with stack-specific paths:
+
+```yaml .github/workflows/terraform-module-releaser.yml
+name: Terraform Module Releaser
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed] # closed is needed to release
+    branches:
+      - main
+
+permissions:
+  contents: write       # to push tags & create releases
+  pull-requests: write  # to comment on PRs
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Terraform Module Releaser
+        uses: techpivot/terraform-module-releaser@v1
+        with:
+          module-asset-exclude-patterns: "*terraform.tfvars,**/tests/**"
+          module-change-exclude-patterns: "*terraform.tfvars,**/tests/**"
+          module-path-ignore: "stacks/*/tests,stacks/*/tests/**"
+```
+
+**Key Configuration:**
+- **module-path-ignore**: Excludes `stacks/*/tests` directories from version detection
+- Same exclusion patterns as modules for terraform.tfvars and test files
+
+## Terraform Projects
+
+For the **terraform-projects** repository, the configuration is simpler as projects don't exclude terraform.tfvars (they're included in releases):
+
+```yaml .github/workflows/terraform-module-releaser.yml
+name: Terraform Module Releaser
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed] # closed is needed to release
+    branches:
+      - main
+
+permissions:
+  contents: write       # to push tags & create releases
+  pull-requests: write  # to comment on PRs
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Terraform Module Releaser
+        uses: techpivot/terraform-module-releaser@v1
+        with:
+          module-path-ignore: "projects/*/*/tests,projects/*/*/tests/**"
+```
+
+**Key Configuration:**
+- **module-path-ignore**: Excludes `projects/*/*/tests` directories from version detection
+- **No terraform.tfvars exclusion**: Projects include terraform.tfvars files in releases as they contain environment-specific configurations
+
+<Warning>
+Unlike modules and stacks, projects include terraform.tfvars files in tagged releases since they contain environment-specific variable values needed for deployment.
+</Warning>
+
+## Configuration Options
+
+### Required Permissions
+
+The workflow requires these GitHub permissions:
+- **contents: write** - To create tags and GitHub releases
+- **pull-requests: write** - To comment on pull requests with version information
+
+### Optional Customization
+
+You can customize the releaser behavior with optional parameters:
+
+```yaml
+with:
+  default-first-tag: "v1.0.0"              # First tag version if no previous tags exist
+  major-keywords: "breaking change,major"    # Keywords that trigger major version bumps
+  minor-keywords: "feat,feature"             # Keywords that trigger minor version bumps
+  patch-keywords: "fix,chore,docs"          # Keywords that trigger patch version bumps
+```
+
+## How It Works
+
+1. **Pull Request Created/Updated**: The workflow analyzes commits and determines version changes
+2. **Version Detection**: Uses conventional commits to determine if changes are major, minor, or patch
+3. **PR Comments**: Comments on the PR with version information
+4. **Release on Merge**: When the PR is merged (closed), creates a tag and GitHub release
+
+<Info>
+The workflow only creates releases when PRs are merged to `main`. The `closed` event type is required to detect when a PR is merged.
+</Info>
+
+## Tag Structure
+
+Tags are created following the pattern:
+- **Modules**: `modules/<module-name>/v<version>` (e.g., `modules/az_storage_account/v1.0.0`)
+- **Stacks**: `stacks/<stack-name>/v<version>` (e.g., `stacks/storage_account_stack/v1.0.0`)
+- **Projects**: `projects/<project-name>/<env>/v<version>` (e.g., `projects/zamba/dev/v1.0.0`)
+
+## Troubleshooting
+
+### Releases Not Created
+
+- Verify the PR targets the `main` branch
+- Check that the workflow has `contents: write` permission
+- Ensure commits follow conventional commit format
+- Verify the module-path-ignore patterns match your repository structure
+
+### Wrong Version Detected
+
+- Review commit messages for conventional commit keywords
+- Check that excluded paths (tests, terraform.tfvars) aren't affecting version detection
+- Verify the module-path-ignore configuration matches your file structure
+
+### Test Files Included in Release
+
+- Verify `module-asset-exclude-patterns` includes `**/tests/**`
+- Check that `module-path-ignore` includes your test directory patterns
+- Ensure test directories follow the expected structure

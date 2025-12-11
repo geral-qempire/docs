@@ -1,0 +1,70 @@
+---
+title: "Repositories"
+description: "Overview of the three Terraform repositories: modules, stacks, and projects"
+---
+
+Our infrastructure code is organized across three repositories, each serving a specific purpose in the infrastructure-as-code workflow.
+
+<CardGroup cols={3}>
+<Card
+  title="Terraform Modules"
+  icon="puzzle-piece"
+  href="https://github.com/geral-qempire/terraform-modules"
+>
+</Card>
+
+<Card
+  title="Terraform Stacks"
+  icon="puzzle"
+  href="https://github.com/geral-qempire/terraform-stacks"
+>
+</Card>
+
+<Card
+  title="Terraform Projects"
+  icon="box-arrow-up"
+  href="https://github.com/geral-qempire/terraform-projects"
+>
+</Card>
+</CardGroup>
+
+## Terraform Modules
+
+The **terraform-modules** repository contains primitive, stateless Terraform modules that serve as the foundational building blocks for all infrastructure.
+
+**Scope:**
+- Primitive modules that encapsulate logic
+- Tool modules to simplify and standardize stack development
+- Examples: `az_storage_account`, `az_key_vault`, `az_rbac_profile_assignment`
+
+<Check>
+**Purpose:** Provide standardized, tested modules that encapsulate and provide either a tool for development or an interface to be configured in the stack.
+</Check>
+
+## Terraform Stacks
+
+The **terraform-stacks** repository combines modules to create stateless bundles and templates that represent complete infrastructure solutions.
+
+**Scope:**
+- **Bundles**: Combines multiple modules into cohesive units (e.g., storage account + private endpoint + alerts + RBAC + tiers)
+- **Templates**: Uses bundles to create larger templates (e.g., Omni template = storage bundle + key vault bundle + SQL bundle + size tiers)
+- Stateless configurations that can be deployed to any environment
+- Examples: `storage_account_stack`, `resource_group_stack`
+
+<Check>
+**Purpose:** Provide tiered and ready-to-use infrastructure bundles and templates that combine multiple modules into complete solutions.
+</Check>
+
+## Terraform Projects
+
+The **terraform-projects** repository contains environment-specific deployments that use stacks to provision real infrastructure.
+
+**Scope:**
+- Environment-specific configurations (dev, qa, prd)
+- Deploys stacks to real Azure infrastructure
+- Contains variable values and backend configurations for each environment
+- Examples: Project configurations for specific applications or services
+
+<Check>
+**Purpose:** Manage actual infrastructure deployments by configuring and deploying stacks to specific environments.
+</Check>
