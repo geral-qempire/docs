@@ -3,45 +3,20 @@ title: "Introduction"
 description: "Overview of DevOps standards and practices for terraform modules, stacks, and projects"
 ---
 
+<span className="dark:hidden">
+  <Frame>
+    <img src="/images/devops-architecture.png" alt="DevOps architecture diagram showing terraform modules, stacks, and projects workflow" />
+  </Frame>
+</span>
+
+
+<span className="hidden dark:block">
+  <Frame>
+  <img src="/images/devops-architecture-dark.png" alt="DevOps architecture diagram showing terraform modules, stacks, and projects workflow" className="hidden dark:block" />
+  </Frame>
+</span>
+
 This documentation outlines the DevOps standards and practices used across our terraform modules, stacks, and projects repositories. Following these conventions ensures consistency, enables automation, and maintains high code quality across all infrastructure repositories.
-
-## Where to Start
-
-Get started by understanding our core standards and branching strategies:
-
-<CardGroup cols={2}>
-<Card
-  title="Versioning"
-  icon="tag"
-  href="standards-practices/versioning"
->
-Learn about semantic versioning and automated release management using techpivot/terraform-module-releaser@v1
-</Card>
-
-<Card
-  title="Commits"
-  icon="file-code"
-  href="standards-practices/commit-conventions"
->
-Follow Conventional Commits format to enable automated versioning and maintain clear commit history
-</Card>
-
-<Card
-  title="Modules & Stacks Branching"
-  icon="puzzle"
-  href="modules-stacks/gitflow-branching"
->
-Learn about the Gitflow workflow and branch naming conventions for modules and stacks
-</Card>
-
-<Card
-  title="Projects Branching"
-  icon="box-arrow-up"
-  href="projects/branching-strategy-projects"
->
-Learn about the trunk-based branching strategy and branch naming conventions for projects
-</Card>
-</CardGroup>
 
 ## Workflows
 
@@ -49,7 +24,7 @@ Follow these step-by-step workflows for developing, releasing, and deploying:
 
 <CardGroup cols={2}>
 <Card
-  title="Feature Development Workflow"
+  title="Module & Stack development Workflow"
   icon="code-branch"
   href="modules-stacks/workflow-develop-modules-stacks"
 >
@@ -57,7 +32,7 @@ Step-by-step workflow for feature and bugfix branches merging into develop for m
 </Card>
 
 <Card
-  title="Release Workflow"
+  title="Module & Stack Release Workflow"
   icon="rocket"
   href="modules-stacks/workflow-release-modules-stacks"
 >
