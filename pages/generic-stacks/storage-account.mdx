@@ -1,178 +1,202 @@
 ---
-title: "Storage Account Stack"
-description: "Deploy Azure Storage Accounts with configurable tiers, role profiles, alerts, and lifecycle management"
+title: "Storage Account Catalog"
+description: "A user-friendly guide to help you choose the right Storage Account configuration for your needs"
 ---
 
-The Storage Account stack provides a comprehensive solution for deploying Azure Storage Accounts with pre-configured tiers, role-based access control, monitoring alerts, and automated lifecycle management.
+Azure Storage Accounts provide secure, scalable cloud storage for your applications and data. This guide helps you understand the different options available when requesting a Storage Account.
 
-## Role Profiles
+<Tip>
+This page explains the options you'll see in the Storage Account request form. For technical details about Azure Storage Accounts, refer to the [official Microsoft documentation](https://learn.microsoft.com/azure/storage/common/storage-account-overview).
+</Tip>
 
-Role profiles define what permissions are granted to principals. Choose the profiles that match your access requirements.
+## Overview
 
-<CardGroup cols={3}>
-<Card
-  title="Write Access Profile"
-  icon="pencil"
->
-Grants full read and write access to all storage services (Blob, File, Queue, Table) plus Reader role for the storage account.
-</Card>
+When requesting a Storage Account, you'll need to make decisions about:
 
-<Card
-  title="Read Access Profile"
-  icon="eye"
->
-Grants read-only access to all storage services (Blob, File, Queue, Table) plus Reader role for the storage account.
-</Card>
+- **Availability & Disaster Recovery**: How protected your data needs to be (Bronze, Silver, Gold, Platinum, Diamond)
+- **Versioning**: Whether you need protection against accidental changes (Bronze, Silver, Gold, Platinum)
+- **Lifecycle Management**: Whether to automatically optimize storage costs (Bronze/Off, Silver/On)
+- **RBAC Profiles**: Who can read or modify your data (Full Access, Read Access)
+- **Networking**: Whether to use private endpoints for secure access
+- **Alerts**: What notifications you want to receive (Base, Blob, File, Queue)
 
-<Card
-  title="Alert Access Profile"
-  icon="bell"
->
-Grants BDSO Alert Operator role for monitoring and managing alerts on the storage account.
-</Card>
-</CardGroup>
+---
 
-### Write Access Profile Roles
+## Tier Selection Guide
 
-| Role | Description |
-|------|-------------|
-| **Storage Blob Data Contributor** | Full access to blob containers and data |
-| **Storage File Data SMB Share Contributor** | Full access to file shares |
-| **Storage Queue Data Contributor** | Full access to queues and messages |
-| **Storage Table Data Contributor** | Full access to tables and entities |
-| **Reader** | Read access to the storage account resource |
+Use this quick reference to determine which tiers match your needs:
 
-### Read Access Profile Roles
+| Your Need | Availability Tier | Versioning Tier | Lifecycle Tier |
+|-----------|------------------|-----------------|----------------|
+| Development/Testing | Bronze | Bronze | Bronze |
+| Standard Production | Silver | Silver | Silver |
+| Critical Production | Gold | Gold | Silver |
+| Mission-Critical | Platinum or Diamond | Platinum | Silver |
+| Need version history | Any | Silver or higher | Any |
+| Want cost optimization | Any | Any | Silver |
+| Read access during outages | Diamond | Any | Any |
 
-| Role | Description |
-|------|-------------|
-| **Storage Blob Data Reader** | Read-only access to blob containers and data |
-| **Storage File Data SMB Share Reader** | Read-only access to file shares |
-| **Storage Queue Data Reader** | Read-only access to queues and messages |
-| **Storage Table Data Reader** | Read-only access to tables and entities |
-| **Reader** | Read access to the storage account resource |
+---
 
-### Alert Access Profile Roles
+## Availability & Disaster Recovery
 
-| Role | Description |
-|------|-------------|
-| **BDSO Alert Operator** | Access to view and manage alerts on the storage account |
+Choose a tier based on how critical your data is and how much protection you need against outages or data loss.
 
-## Storage Tiers (Baseline)
+| Attribute | <Badge color="red">Bronze</Badge> | <Badge color="gray">Silver</Badge> | <Badge color="orange">Gold</Badge> | <Badge color="purple">Platinum</Badge> | <Badge color="blue">Diamond</Badge> |
+|-----------|--------|--------|------|----------|---------|
+| **Read SLA** | 99.9% | 99.9% | 99.9% | 99.9% | 99.99% |
+| **Write SLA** | 99.9% | 99.9% | 99.9% | 99.9% | 99.9% |
+| **Regional Outage RPO** | N/A | N/A | ≤ 15 min | ≤ 15 min | ≤ 15 min |
+| **Regional Outage SLA** | N/A | N/A | N/A | 99% of month | 99% of month |
+| **Read Access During Outage** | No | No | No | No | Yes |
+| **Soft Delete** | 7d / 7d | 30d / 30d | 30d / 30d | 30d / 30d | 30d / 30d |
 
-Storage tiers define the replication strategy and retention policies for your storage account. Choose based on your availability and durability requirements.
+<Warning>
+Platform RTO is not guaranteed. Recovery times depend on your application's runbooks and operational procedures.
+</Warning>
 
-| Tier | Replication | Blob Retention | Container Retention | Geo Priority | Use Case |
-|------|-------------|----------------|---------------------|--------------|----------|
-| **Bronze** | LRS (Locally Redundant) | 7 days | 7 days | No | Development, non-critical data |
-| **Silver** | ZRS (Zone Redundant) | 30 days | 30 days | No | Production workloads, single region |
-| **Gold** | GZRS (Geo-Zone Redundant) | 30 days | 30 days | No | Production workloads, multi-region |
-| **Platinum** | GZRS (Geo-Zone Redundant) | 30 days | 30 days | Yes | Critical workloads, optimized failover |
-| **Diamond** | RAGZRS (Read-Access Geo-Zone Redundant) | 30 days | 30 days | Yes | Mission-critical, read access from secondary |
+---
+
+## Versioning
+
+Versioning helps you recover from accidental overwrites, deletions, data corruption, or malicious changes.
+
+| Attribute | <Badge color="red">Bronze</Badge> | <Badge color="gray">Silver</Badge> | <Badge color="orange">Gold</Badge> | <Badge color="purple">Platinum</Badge> |
+|-----------|--------|--------|------|----------|
+| **Operational RPO** | N/A | Last change | Last change | Last change |
+| **Operational RTO** | N/A | Minutes | Minutes | Minutes |
+| **Version Retention** | N/A | 14 days | 30 days | 60 days (cool @30d, delete @60d) |
 
 <Info>
-**Replication Types Explained:**
-- **LRS**: Data replicated 3 times within a single datacenter
-- **ZRS**: Data replicated across 3 availability zones in a single region
-- **GZRS**: Data replicated across 3 availability zones in primary region + 1 copy in secondary region
-- **RAGZRS**: Same as GZRS but with read access to secondary region
+**Versioning**: Creates a history of your files, allowing you to recover previous versions if files are accidentally modified or deleted.
 </Info>
-
-## Smart Lifecycle Tiers
-
-Smart lifecycle management automatically moves blobs between access tiers (Hot → Cool → Cold → Archive) based on access patterns to optimize costs.
-
-| Tier | Hot to Cool | Cool to Cold | Description |
-|------|-------------|--------------|-------------|
-| **Off** (`false`) | - | - | No automatic tier movement |
-| **On** (`true`) | 30 days | 90 days | Standard lifecycle management |
-| **Override** | Custom | Custom | Fully customizable schedule |
 
 <Info>
-Lifecycle management uses the last access time to determine when to move blobs. Blobs that haven't been accessed for the specified number of days are automatically moved to a cooler (cheaper) tier.
+**Operational RPO**: With versioning enabled, you can recover to the "last change" - meaning you can restore a file to exactly how it was before the most recent modification.
 </Info>
-
-## Versioning Tiers
-
-Versioning tiers control blob versioning and retention policies. When enabled, every update to a blob creates a new version that can be retained for recovery.
-
-| Tier | Versioning | Retention Period | Cool Tier After | Use Case |
-|------|------------|------------------|-----------------|----------|
-| **Bronze** | Disabled | - | - | No version history needed |
-| **Silver** | Enabled | 14 days | - | Short-term version history |
-| **Gold** | Enabled | 30 days | - | Standard version history |
-| **Platinum** | Enabled | 60 days | 30 days | Extended version history with cost optimization |
-| **Diamond** | Enabled | 90 days | 30 days | Long-term version history with cost optimization |
 
 <Info>
-**Versioning Benefits:**
-- Recover from accidental overwrites or deletions
-- Maintain point-in-time recovery
-- Cool tier moves old versions to cheaper storage after specified days
+**Operational RTO**: The time it takes to locate and restore a previous version. This typically takes minutes but depends on your team's procedures.
 </Info>
 
-## Alert Options
+<Info>
+**Version Retention**: How long previous versions are kept. After this period, old versions are automatically deleted.
+</Info>
 
-Enable monitoring alerts for different aspects of your storage account. Alerts are organized by service area.
+<Tip>
+Enable versioning for any data that changes frequently or is critical to your business. The cost is minimal compared to the protection it provides.
+</Tip>
 
-<CardGroup cols={2}>
-<Card
-  title="Base Alerts"
-  icon="server"
->
-Account-level alerts for availability, capacity, and ingress/egress traffic.
-</Card>
+---
 
-<Card
-  title="Blob Alerts"
-  icon="database"
->
-Blob service specific alerts for capacity and latency.
-</Card>
+## Lifecycle Management
 
-<Card
-  title="File Alerts"
-  icon="folder"
->
-File service alerts for availability, throttling, capacity, and governance.
-</Card>
+Lifecycle management helps you save money on storage for old or rarely-used files while keeping them available if needed.
 
-<Card
-  title="Queue Alerts"
-  icon="list"
->
-Queue service alerts for capacity, backlog, and governance.
-</Card>
-</CardGroup>
+| Attribute | <Badge color="red">Bronze</Badge> | <Badge color="gray">Silver</Badge> |
+|-----------|--------|--------|
+| **Lifecycle Management** | Disabled | Enabled |
+| **Hot → Cool Transition** | N/A | Move to Cool if not accessed for 30 days |
+| **Cool → Cold Transition** | N/A | Move to Cold if not accessed for 90 days (from last access) |
+| **Auto-Promote** | N/A | Automatically promote Cool → Hot on read |
 
-## Private Endpoint Options
+<Tip>
+Enable lifecycle management if you have data that's accessed frequently at first but then rarely used (like logs, backups, or archived documents).
+</Tip>
 
-Private endpoints provide secure, private connectivity to your storage account services without traversing the public internet.
 
-| Option | Service | Description |
-|--------|---------|-------------|
-| **Blob** | Blob Storage | Private access to blob containers |
-| **File** | File Shares | Private access to file shares (SMB/NFS) |
-| **Queue** | Queue Storage | Private access to queues |
-| **Table** | Table Storage | Private access to tables |
+For technical details, see the [Microsoft documentation on blob lifecycle management](https://learn.microsoft.com/azure/storage/blobs/lifecycle-management-overview).
 
-## Configuration Summary
+---
 
-Use these parameters to configure your storage account:
+## RBAC Profiles
 
-| Parameter | Options | Description |
-|-----------|---------|-------------|
-| `storage_tier` | bronze, silver, gold, plat, diamond, override | Storage replication and retention tier |
-| `smart_lifecycle_tier` | false, true, override | Enable automatic blob tier movement |
-| `versioning_tier` | bronze, silver, gold, platinum, diamond, override | Blob versioning and retention policy |
-| `enable_base_alerts` | true, false | Enable account-level alerts |
-| `enable_blob_alerts` | true, false | Enable blob service alerts |
-| `enable_file_alerts` | true, false | Enable file service alerts |
-| `enable_queue_alerts` | true, false | Enable queue service alerts |
-| `enable_private_endpoint_blob` | true, false | Create private endpoint for blob service |
-| `enable_private_endpoint_file` | true, false | Create private endpoint for file service |
-| `enable_private_endpoint_queue` | true, false | Create private endpoint for queue service |
-| `enable_private_endpoint_table` | true, false | Create private endpoint for table service |
-| `write_access_principals` | List of principals | Assign write access profile |
-| `read_access_principals` | List of principals | Assign read access profile |
-| `alert_access_principals` | List of principals | Assign alert access profile |
+RBAC profiles determine what actions users, groups, or service accounts can perform. You'll provide the IDs of principals who should receive these permissions.
+
+<Info>
+**RBAC (Role-Based Access Control)**: Profiles that determine what actions users, groups, or service accounts can perform on your Storage Account.
+</Info>
+
+<Info>
+For detailed technical descriptions of these roles, see the [Microsoft documentation on Azure built-in roles for storage](https://learn.microsoft.com/azure/storage/common/storage-auth-aad-rbac-portal#azure-built-in-roles-for-storage).
+</Info>
+
+### Write Access
+ Grants complete read and write access to all storage services.
+
+- Storage Blob Data Contributor
+- Storage File Data SMB Share Contributor
+- Storage Queue Data Contributor
+- Storage Table Data Contributor
+- Reader
+
+### Read Access
+Grants read-only access to all storage services.
+
+- Storage Blob Data Reader
+- Storage File Data SMB Share Reader
+- Storage Queue Data Reader
+- Storage Table Data Reader
+- Reader
+
+### Alert Access
+Grants access to view and manage alerts on the storage account.
+
+- BDSO Alert Operator
+
+---
+
+## Networking
+
+Configure how your Storage Account can be accessed over the network.
+
+### Private Endpoints
+
+<Info>
+**Private Endpoints**: Secure, private connectivity to your storage account services without traversing the public internet.
+</Info>
+
+Specify which private endpoints you need based on the Storage Account services you will use:
+
+| Service | When to Enable |
+|---------|----------------|
+| **Blob** | Enable if you'll use blob containers to store files, images, or unstructured data |
+| **File** | Enable if you'll use file shares (SMB/NFS) for shared file storage |
+| **Queue** | Enable if you'll use queues for messaging between applications |
+| **Table** | Enable if you'll use tables for NoSQL structured data storage |
+
+### Allowed IP Addresses
+
+Optionally, you can configure allowed public IPv4 addresses to enable public network access from specific IPs. If no IPs are provided, public network access is completely disabled.
+
+---
+
+## Alerts
+
+Alerts notify you when something important happens with your Storage Account. You can enable different types based on what you need to monitor.
+
+### Alert list
+
+| Alert Name | Type | Purpose | Threshold |
+|------------|------|---------|-----------|
+| **Account availability** | <Badge color="blue">Base</Badge> | Alert when storage account availability drops below 100% | < 100% |
+| **Used capacity (overall)** | <Badge color="blue">Base</Badge> | Overall account capacity consumption approaching quota | > 500 TB |
+| **Egress spike** | <Badge color="blue">Base</Badge> | Detects unusual outbound spikes (cost/exfil) | > 60 MB in 5 min |
+| **Ingress spike** | <Badge color="blue">Base</Badge> | Detects large ingest spikes | > 1 GB in 5 min |
+| **Blob capacity** | <Badge color="green">Blob</Badge> | Blob-only capacity consumption spike | > 500 TB |
+| **Blob Success E2E latency** | <Badge color="green">Blob</Badge> | Elevated end-to-end latency for successful blob operations | > 1000 ms |
+| **Blob Success server latency** | <Badge color="green">Blob</Badge> | Backend processing latency for blob requests | > 1000 ms |
+| **Files availability** | <Badge color="purple">File</Badge> | File service availability degradation | ≤ 99.9% |
+| **Throttling (Files)** | <Badge color="purple">File</Badge> | Triggers on any throttled file share transaction | ≥ 1 transaction |
+| **File capacity** | <Badge color="purple">File</Badge> | Capacity used by Azure Files approaching limit | > 80 TB |
+| **File share capacity quota** | <Badge color="purple">File</Badge> | File share quota early warning | > 4.75 TB |
+| **File share snapshot count** | <Badge color="purple">File</Badge> | Large file snapshot counts (space/management risk) | > 190 snapshots |
+| **File share count** | <Badge color="purple">File</Badge> | Governance check – any file shares exist | > 0 |
+| **File transactions (anonymous success)** | <Badge color="purple">File</Badge> | Anonymous success transactions pattern detection for Files | > 10 transactions |
+| **Queue capacity** | <Badge color="orange">Queue</Badge> | Queue storage consumption approaching limit | > 30 MB |
+| **Queue message backlog** | <Badge color="orange">Queue</Badge> | Backlog indicator – messages piling up in queues | > 1000 messages |
+| **Queue count** | <Badge color="orange">Queue</Badge> | Governance check – any queues exist | > 0 |
+
+### Alert Email List
+
+You must provide at least one email address for QA and Production environment requests.
