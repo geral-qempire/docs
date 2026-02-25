@@ -14,33 +14,13 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Catalog",
-        "groups": [
-          {
-            "group": "GETTING STARTED",
-            "icon": "https://mintlify-assets.b-cdn.net/compass-2.svg",
-            "pages": [
-              "index",
-              "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "GENERIC STACKS",
-            "icon": "https://mintlify-assets.b-cdn.net/star-2.svg",
-            "pages": [
-              "pages/generic-stacks/storage-account"
-            ]
-          }
-        ]
-      },
-      {
         "tab": "DevOps",
         "groups": [
           {
             "group": "GETTING STARTED",
             "icon": "https://mintlify-assets.b-cdn.net/compass-2.svg",
             "pages": [
+              "index",
               "pages/devops/introduction",
               "pages/devops/repositories"
             ]
@@ -49,6 +29,7 @@
             "group": "CI/CD Setup",
             "icon": "cloud",
             "pages": [
+              "pages/devops/ci-cd",
               "pages/devops/env0/setup-staging-projects",
               "pages/devops/env0/github-releaser"
             ]
@@ -88,26 +69,6 @@
             ]
           }
         ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "pages/api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint Examples",
-            "pages": [
-              "pages/api-reference/endpoint/get",
-              "pages/api-reference/endpoint/create",
-              "pages/api-reference/endpoint/delete",
-              "pages/api-reference/endpoint/webhook"
-            ]
-          }
-        ]
       }
     ],
     "global": {
@@ -132,9 +93,8 @@
   "navbar": {},
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/geral-qempire",
+      "linkedin": "https://www.linkedin.com/in/datascienceda/"
     }
   }
 }
