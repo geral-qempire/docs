@@ -87,8 +87,8 @@
     }
   },
   "logo": {
-    "light": "/logo/light.png",
-    "dark": "/logo/dark.png"
+    "light": "/logo/TerraOpsLight.png",
+    "dark": "/logo/TerraOpsDark.png"
   },
   "navbar": {},
   "footer": {
