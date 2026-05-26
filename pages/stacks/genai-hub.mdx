@@ -1,0 +1,171 @@
+---
+title: "GenAI Hub Stack"
+sidebarTitle: "GenAI Hub"
+description: "Central AI Foundry hub with shared resources, model deployments, and enterprise networking"
+---
+
+The **GenAI Hub** stack deploys an [Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-studio/) hub as the central governance layer for your GenAI workloads. It provides shared resources that child projects inherit, including AI services, storage, monitoring, and networking.
+
+## Architecture
+
+The hub creates a single resource group containing:
+
+| Resource | Required | Purpose |
+|---|---|---|
+| AI Foundry Hub | Yes | Central workspace for AI model management |
+| Storage Account | Yes | Default data store for the hub |
+| Key Vault | Yes | Secrets and key management |
+| AI Services | Yes | Azure OpenAI and Cognitive Services endpoint |
+| Log Analytics Workspace | Yes | Centralized logging |
+| Application Insights | Yes | Monitoring and telemetry |
+| Data Lake Storage | Optional | Fabric integration with hierarchical namespace |
+| AI Search | Optional | Vector store for RAG and search workloads |
+| SQL Database | Optional | Relational data store |
+
+---
+
+## Infrastructure tiers
+
+Three tiers control resource sizes, redundancy, and SLA posture across all hub resources.
+
+<Tabs>
+<Tab title="Bronze">
+  **Development and proof of concept** -- Lowest cost for prototyping and testing. No SLA guarantees, no redundancy, no purge protection.
+
+  | Resource | Configuration |
+  |---|---|
+  | Storage replication | Locally redundant (LRS) |
+  | Data Lake replication | Locally redundant (LRS) |
+  | Key Vault | Standard |
+  | Key Vault purge protection | Disabled |
+  | AI Search | Basic tier, 1 replica, 1 partition |
+  | SQL Database | Basic, 2 GB |
+  | Log retention | 30 days |
+</Tab>
+
+<Tab title="Silver">
+  **Production workloads** -- Zone-redundant storage, purge protection, and multiple search replicas for production availability and compliance.
+
+  | Resource | Configuration |
+  |---|---|
+  | Storage replication | Zone-redundant (ZRS) |
+  | Data Lake replication | Zone-redundant (ZRS) |
+  | Key Vault | Standard |
+  | Key Vault purge protection | Enabled |
+  | AI Search | Standard tier, 2 replicas, 1 partition |
+  | SQL Database | Standard S1, 50 GB |
+  | Log retention | 90 days |
+</Tab>
+
+<Tab title="Gold">
+  **Mission-critical workloads** -- Geo-zone-redundant storage, premium key vault with HSM backing, maximum search capacity, and premium SQL for the highest availability SLAs.
+
+  | Resource | Configuration |
+  |---|---|
+  | Storage replication | Geo-zone-redundant (GZRS) |
+  | Data Lake replication | Geo-zone-redundant (GZRS) |
+  | Key Vault | Premium (HSM-backed) |
+  | Key Vault purge protection | Enabled |
+  | AI Search | Standard tier, 3 replicas, 2 partitions |
+  | SQL Database | Premium P1, 250 GB |
+  | Log retention | 180 days |
+</Tab>
+</Tabs>
+
+---
+
+## Networking
+
+The stack supports three network security postures.
+
+<Tabs>
+<Tab title="Public">
+  All resources are accessible over the public internet. No VNet, private endpoints, or outbound rules are created.
+
+  Best for quick prototyping and development without compliance constraints.
+</Tab>
+
+<Tab title="Inbound Safe">
+  Public inbound access is **blocked** for all resources. A virtual network with private endpoints is deployed for every resource.
+
+  Private DNS zones are auto-created and linked to the VNet, or you can supply existing ones.
+
+  Outbound traffic from the hub's managed network remains unrestricted.
+</Tab>
+
+<Tab title="Inbound + Outbound Safe">
+  The most restrictive mode. In addition to everything in *Inbound Safe*:
+
+  - The hub's managed network blocks all outbound traffic by default
+  - **FQDN outbound rules** are created for allowed external destinations
+  - **Private endpoint outbound rules** are created on the hub's managed network for optional resources
+</Tab>
+</Tabs>
+
+### Private endpoints
+
+When using a private networking mode, private endpoints are created for:
+
+| Resource | Sub-resource | Configurable |
+|---|---|---|
+| Storage Account | Blob (default) | Yes |
+| Key Vault | Vault | No |
+| AI Services | Account | No |
+| AI Hub workspace | ML Workspace | No |
+| Data Lake Storage | Blob, DFS (default) | Yes |
+| AI Search | Search Service | No |
+| SQL Database | SQL Server | No |
+
+<Tip>
+You can bring your own VNet and subnet or let the stack auto-create them. Storage private endpoint sub-resources (blob, file, table, queue, DFS) are configurable per storage account.
+</Tip>
+
+---
+
+## Connections
+
+The hub creates workspace connections to all its resources. Azure OpenAI and Cognitive Services connections use **API key** authentication (required by AI Foundry for model deployments). All other connections use **RBAC (Microsoft Entra ID)**.
+
+| Connection | Auth | Category |
+|---|---|---|
+| AI Services | Entra ID | Cognitive Service |
+| Azure OpenAI | API Key | Azure OpenAI |
+| Cognitive Services (default) | API Key | Cognitive Service |
+| Storage | Entra ID | Azure Blob |
+| Data Lake Storage | Entra ID | Azure Blob |
+| AI Search | Entra ID | Cognitive Search |
+| SQL Database | Entra ID | Azure SQL |
+
+---
+
+## RBAC profiles
+
+You can assign Azure AD groups for **Reader** and **Contributor** access. Each profile applies least-privilege roles across all hub resources.
+
+<Tabs>
+<Tab title="Reader">
+| Resource | Role |
+|---|---|
+| Resource Group | Reader |
+| AI Hub | Azure AI Developer |
+| Storage | Storage Blob Data Reader |
+| Key Vault | Key Vault Reader + Key Vault Secrets User |
+| AI Services | Cognitive Services User |
+| Data Lake | Storage Blob Data Reader |
+| AI Search | Search Index Data Reader |
+| SQL Server | Reader |
+</Tab>
+
+<Tab title="Contributor">
+| Resource | Role |
+|---|---|
+| Resource Group | Contributor |
+| AI Hub | Azure AI Administrator |
+| Storage | Storage Blob Data Contributor |
+| Key Vault | Key Vault Contributor + Key Vault Secrets Officer |
+| AI Services | Cognitive Services Contributor |
+| Data Lake | Storage Blob Data Contributor |
+| AI Search | Search Index Data Contributor + Search Service Contributor |
+| SQL Server | SQL DB Contributor |
+</Tab>
+</Tabs>
