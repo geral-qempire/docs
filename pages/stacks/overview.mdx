@@ -25,7 +25,7 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
           Opinionated Terraform stacks with built-in networking, RBAC, monitoring, and tiered environments for Azure AI infrastructure.
         </p>
         <div className="flex flex-row gap-4 mt-5">
-        <a href="/pages/stacks/genai-hub">
+        <a href="/pages/stacks/genai-foundry">
           <button
             type="button"
             className="px-5 flex items-center font-medium text-sm rounded-full py-2 shadow-sm text-white dark:text-gray-900 bg-primary-dark dark:bg-primary-light hover:opacity-[0.9] hover:bg-primary justify-center"
@@ -56,46 +56,46 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
       <p
         className="text-[#5B616E] dark:text-gray-300 text-md mb-1 mt-3"
       >
-        Deploy Azure AI Foundry hubs and projects with enterprise-grade security and compliance.
+        Deploy Azure AI Foundry infrastructure with enterprise-grade security, VNet injection, and managed identity authentication.
       </p>
     </div>
     <div className="dark:hidden block">
     <CardGroup cols={2}>
         <ProductCard
-          title="GenAI Hub"
-          description="Central hub with AI services, storage, key vault, and managed networking"
-          href="/pages/stacks/genai-hub"
+          title="GenAI Foundry"
+          description="AI Foundry account with VNet injection, managed identity auth, and private networking for agents"
+          href="/pages/stacks/genai-foundry"
           img="https://mintlify-assets.b-cdn.net/aspen-ai.svg"
           model="AI Foundry"
-          type="Hub"
+          type="Foundry"
         />
         <ProductCard
-          title="GenAI Project"
-          description="Child project with toggleable resources connected to a hub"
-          href="/pages/stacks/genai-project"
+          title="GenAI Foundry Project"
+          description="Foundry project with agent capabilities, connections, and project-level capability host"
+          href="/pages/stacks/genai-foundry-project"
           img="https://mintlify-assets.b-cdn.net/aspen-chat.svg"
           model="azapi"
-          type="Project"
+          type="Foundry"
         />
     </CardGroup>
     </div>
     <div className="dark:block hidden">
     <CardGroup cols={2}>
         <ProductCard
-          title="GenAI Hub"
-          description="Central hub with AI services, storage, key vault, and managed networking"
-          href="/pages/stacks/genai-hub"
+          title="GenAI Foundry"
+          description="AI Foundry account with VNet injection, managed identity auth, and private networking for agents"
+          href="/pages/stacks/genai-foundry"
           img="https://mintlify-assets.b-cdn.net/aspen-dark-ai.svg"
           model="AI Foundry"
-          type="Hub"
+          type="Foundry"
         />
         <ProductCard
-          title="GenAI Project"
-          description="Child project with toggleable resources connected to a hub"
-          href="/pages/stacks/genai-project"
+          title="GenAI Foundry Project"
+          description="Foundry project with agent capabilities, connections, and project-level capability host"
+          href="/pages/stacks/genai-foundry-project"
           img="https://mintlify-assets.b-cdn.net/aspen-dark-chat.svg"
           model="azapi"
-          type="Project"
+          type="Foundry"
         />
     </CardGroup>
     </div>
@@ -114,7 +114,33 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
         Every stack ships with enterprise-grade capabilities out of the box.
       </p>
     </div>
-    <ProductTiles categories={appCategories} hideButtons={true} />
+    <Tabs>
+      <Tab title="Foundry">
+        <CardGroup cols={2}>
+          <Card title="GenAI Foundry" icon="microchip-ai" href="/pages/stacks/genai-foundry">
+            AI Foundry account with Storage, Cosmos DB, AI Search, Key Vault, VNet injection, and managed identity auth
+          </Card>
+          <Card title="GenAI Foundry Project" icon="diagram-project" href="/pages/stacks/genai-foundry-project">
+            Foundry project with agent capabilities, AAD connections, and project-level capability host
+          </Card>
+        </CardGroup>
+      </Tab>
+      <Tab title="Hub">
+        <CardGroup cols={2}>
+          <Card title="GenAI Hub" icon="brain" href="/pages/stacks/genai-hub">
+            Central AI Foundry hub with AI services, storage, key vault, managed networking, and model deployments
+          </Card>
+          <Card title="GenAI Project" icon="folder-open" href="/pages/stacks/genai-project">
+            Child project connected to a hub with toggleable resources and dedicated RBAC
+          </Card>
+        </CardGroup>
+      </Tab>
+      <Tab title="ML (coming soon)">
+        <p className="text-[#5B616E] dark:text-gray-300 text-md py-4">
+          Machine Learning stacks for training, inference, and MLOps workflows are coming soon.
+        </p>
+      </Tab>
+    </Tabs>
   </Container>
 
   <Container>
@@ -125,16 +151,16 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
       <QuickstartItem
-        title="Deploy a GenAI Hub"
-        description="Set up the central AI Foundry hub with storage, key vault, and AI services"
-        icon={<Icon icon="brain" size="20" />}
-        href="/pages/stacks/genai-hub"
+        title="Deploy a GenAI Foundry"
+        description="Set up an AI Foundry account with VNet injection, Cosmos DB, AI Search, and managed identity"
+        icon={<Icon icon="microchip-ai" size="20" />}
+        href="/pages/stacks/genai-foundry"
       />
       <QuickstartItem
-        title="Add a GenAI Project"
-        description="Create a child project connected to your hub with its own resources"
+        title="Add a Foundry Project"
+        description="Create a project with agent capabilities connected to your Foundry account"
         icon={<Icon icon="diagram-project" size="20" />}
-        href="/pages/stacks/genai-project"
+        href="/pages/stacks/genai-foundry-project"
       />
       <QuickstartItem
         title="DevOps workflows"
@@ -161,7 +187,7 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
       <Card
         title="Stacks documentation"
         icon="cubes-stacked"
-        href="/pages/stacks/genai-hub"
+        href="/pages/stacks/genai-foundry"
       >
         Browse all available stacks with features, tiers, and usage examples
       </Card>
