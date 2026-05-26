@@ -114,33 +114,7 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
         Every stack ships with enterprise-grade capabilities out of the box.
       </p>
     </div>
-    <Tabs>
-      <Tab title="Foundry">
-        <CardGroup cols={2}>
-          <Card title="GenAI Foundry" icon="microchip-ai" href="/pages/stacks/genai-foundry">
-            AI Foundry account with Storage, Cosmos DB, AI Search, Key Vault, VNet injection, and managed identity auth
-          </Card>
-          <Card title="GenAI Foundry Project" icon="diagram-project" href="/pages/stacks/genai-foundry-project">
-            Foundry project with agent capabilities, AAD connections, and project-level capability host
-          </Card>
-        </CardGroup>
-      </Tab>
-      <Tab title="Hub">
-        <CardGroup cols={2}>
-          <Card title="GenAI Hub" icon="brain" href="/pages/stacks/genai-hub">
-            Central AI Foundry hub with AI services, storage, key vault, managed networking, and model deployments
-          </Card>
-          <Card title="GenAI Project" icon="folder-open" href="/pages/stacks/genai-project">
-            Child project connected to a hub with toggleable resources and dedicated RBAC
-          </Card>
-        </CardGroup>
-      </Tab>
-      <Tab title="ML (coming soon)">
-        <p className="text-[#5B616E] dark:text-gray-300 text-md py-4">
-          Machine Learning stacks for training, inference, and MLOps workflows are coming soon.
-        </p>
-      </Tab>
-    </Tabs>
+    <ProductTiles categories={appCategories} hideButtons={false} />
   </Container>
 
   <Container>
