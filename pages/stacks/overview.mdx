@@ -50,17 +50,17 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
     <div className="flex flex-col w-full mb-7">
       <div className="flex items-center justify-between w-full">
         <Title>
-          GenAI Stacks
+          Recent Updates
         </Title>
       </div>
       <p
         className="text-[#5B616E] dark:text-gray-300 text-md mb-1 mt-3"
       >
-        Deploy Azure AI Foundry infrastructure with enterprise-grade security, VNet injection, and managed identity authentication.
+        The latest stacks for deploying Azure AI Foundry infrastructure with enterprise-grade security.
       </p>
     </div>
     <div className="dark:hidden block">
-    <CardGroup cols={2}>
+    <CardGroup cols={3}>
         <ProductCard
           title="GenAI Foundry"
           description="AI Foundry account with VNet injection, managed identity auth, and private networking for agents"
@@ -71,16 +71,24 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
         />
         <ProductCard
           title="GenAI Foundry Project"
-          description="Foundry project with agent capabilities, connections, and project-level capability host"
+          description="Foundry project with agent capabilities, connections, and capability host"
           href="/pages/stacks/genai-foundry-project"
           img="https://mintlify-assets.b-cdn.net/aspen-chat.svg"
           model="azapi"
           type="Foundry"
         />
+        <ProductCard
+          title="GenAI Hub"
+          description="Central hub with AI services, storage, key vault, and managed networking"
+          href="/pages/stacks/genai-hub"
+          img="https://mintlify-assets.b-cdn.net/aspen-code.svg"
+          model="AI Foundry"
+          type="Hub"
+        />
     </CardGroup>
     </div>
     <div className="dark:block hidden">
-    <CardGroup cols={2}>
+    <CardGroup cols={3}>
         <ProductCard
           title="GenAI Foundry"
           description="AI Foundry account with VNet injection, managed identity auth, and private networking for agents"
@@ -91,11 +99,19 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
         />
         <ProductCard
           title="GenAI Foundry Project"
-          description="Foundry project with agent capabilities, connections, and project-level capability host"
+          description="Foundry project with agent capabilities, connections, and capability host"
           href="/pages/stacks/genai-foundry-project"
           img="https://mintlify-assets.b-cdn.net/aspen-dark-chat.svg"
           model="azapi"
           type="Foundry"
+        />
+        <ProductCard
+          title="GenAI Hub"
+          description="Central hub with AI services, storage, key vault, and managed networking"
+          href="/pages/stacks/genai-hub"
+          img="https://mintlify-assets.b-cdn.net/aspen-dark-code.svg"
+          model="AI Foundry"
+          type="Hub"
         />
     </CardGroup>
     </div>
