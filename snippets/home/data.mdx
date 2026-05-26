@@ -1,67 +1,58 @@
 export const appCategories = [
   {
-    id: 'generic-project',
-    label: 'Generic Project',
+    id: 'genai-foundry',
+    label: 'GenAI Foundry',
     items: [
       {
-        id: 'omni',
-        title: 'Omni',
-        desc: 'For projects that use generic Azure resources and OpenShift',
-        icon: 'https://mintlify-assets.b-cdn.net/tail-icon.svg',
-        image: {
-          light: 'https://mintlify-assets.b-cdn.net/aspen-home.svg',
-          dark: 'https://mintlify-assets.b-cdn.net/aspen-home.svg',
-        },
-        href: '#'
-      },
-    ],
-  },
-  {
-    id: 'ai',
-    label: 'AI',
-    items: [
-      {
-        id: 'ai-foundry',
-        title: 'AI Foundry',
-        desc: 'Platform to develop and deploy AI solutions',
+        id: 'genai-foundry',
+        title: 'GenAI Foundry',
+        desc: 'AI Foundry account with VNet injection, managed identity auth, and private networking for agents',
         icon: 'https://mintlify-assets.b-cdn.net/smart-light.svg',
         image: {
           light: 'https://mintlify-assets.b-cdn.net/aspen-home.svg',
           dark: 'https://mintlify-assets.b-cdn.net/aspen-home.svg',
         },
-        href: '#'
+        href: '/pages/stacks/genai-foundry'
       },
       {
-        id: 'ml-framework',
-        title: 'ML Framework',
-        desc: 'Machine learning framework for building intelligent applications',
+        id: 'genai-foundry-project',
+        title: 'GenAI Foundry Project',
+        desc: 'Foundry project with agent capabilities, connections, and project-level capability host',
         icon: 'https://mintlify-assets.b-cdn.net/broom-light.svg',
         image: {
           light: 'https://mintlify-assets.b-cdn.net/aspen-home.svg',
           dark: 'https://mintlify-assets.b-cdn.net/aspen-home.svg',
         },
-        href: '#'
+        href: '/pages/stacks/genai-foundry-project'
       },
     ]
   },
   {
-    id: 'fabric',
-    label: 'Fabric',
+    id: 'genai-legacy',
+    label: 'GenAI (Legacy)',
     items: [
       {
-        id: 'workspace',
-        title: 'Workspace',
-        desc: 'Create and access Fabric workspaces',
-        icon: {
-          light: 'https://mintlify-assets.b-cdn.net/anchor-light.svg',
-          dark: 'https://mintlify-assets.b-cdn.net/tail-icon.svg',
-        },
+        id: 'genai-hub',
+        title: 'GenAI Hub',
+        desc: 'Central AI Foundry hub with shared resources, networking, and model management',
+        icon: 'https://mintlify-assets.b-cdn.net/smart-light.svg',
         image: {
           light: 'https://mintlify-assets.b-cdn.net/aspen-home.svg',
           dark: 'https://mintlify-assets.b-cdn.net/aspen-home.svg',
         },
-        href: '#'
-      }
+        href: '/pages/stacks/genai-hub'
+      },
+      {
+        id: 'genai-project',
+        title: 'GenAI Project',
+        desc: 'Child project connected to a hub with toggleable resources and dedicated RBAC',
+        icon: 'https://mintlify-assets.b-cdn.net/broom-light.svg',
+        image: {
+          light: 'https://mintlify-assets.b-cdn.net/aspen-home.svg',
+          dark: 'https://mintlify-assets.b-cdn.net/aspen-home.svg',
+        },
+        href: '/pages/stacks/genai-project'
+      },
     ]
   },
 ]

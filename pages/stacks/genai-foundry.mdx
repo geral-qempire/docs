@@ -1,0 +1,192 @@
+---
+title: "GenAI Foundry Stack"
+sidebarTitle: "GenAI Foundry"
+description: "Azure AI Foundry account with shared resources, VNet injection for agents, and enterprise networking"
+---
+
+The **GenAI Foundry** stack deploys an [Azure AI Foundry](https://learn.microsoft.com/en-us/azure/foundry/) account as the central infrastructure layer for your GenAI workloads. It provisions all dependent resources (storage, Cosmos DB, AI Search, Key Vault) with managed identity authentication and supports private networking with VNet injection for Agent APIs.
+
+## Architecture
+
+The stack creates a single resource group containing:
+
+| Resource | Required | Purpose |
+|---|---|---|
+| AI Foundry Account | Yes | Central account for AI model management and agent hosting |
+| Storage Account | Yes | Agent file storage (shared access keys disabled) |
+| Cosmos DB | Yes | Agent thread storage (local auth disabled) |
+| AI Search | Yes | Vector store for knowledge bases and RAG |
+| Key Vault | Yes | Secrets and key management |
+| Log Analytics Workspace | Yes | Centralized logging |
+| Application Insights | Yes | Monitoring and telemetry |
+| Virtual Network | Conditional | Auto-created when using private networking |
+| Private Endpoints | Conditional | Secure access to all resources |
+| Account Capability Host | Conditional | Enables Agent Service with VNet injection |
+
+### Deployment strategy
+
+The Foundry account is deployed in two phases to avoid Azure provisioning timeouts:
+
+1. **Phase 1** -- Create the Foundry account without VNet injection (completes in minutes)
+2. **Phase 2** -- Update the account to add `networkInjections` for Agent APIs
+3. **Phase 3** -- Create the account-level capability host referencing the agent subnet
+
+This pattern matches the Azure portal's behavior and avoids the known timeout issues with single-step VNet injection deployments.
+
+---
+
+## Infrastructure tiers
+
+Three tiers control resource sizes, redundancy, and SLA posture across all resources.
+
+<Tabs>
+<Tab title="Bronze">
+  **Development and proof of concept** -- Lowest cost for prototyping and testing.
+
+  | Resource | Configuration |
+  |---|---|
+  | Storage replication | Locally redundant (LRS) |
+  | Key Vault | Standard |
+  | Key Vault purge protection | Disabled |
+  | Cosmos DB zone redundancy | Disabled |
+  | Cosmos DB auto failover | Disabled |
+  | AI Search | Standard tier, 1 replica, 1 partition |
+  | Log retention | 30 days |
+</Tab>
+
+<Tab title="Silver">
+  **Production workloads** -- Zone-redundant storage, purge protection, and automatic failover for production availability.
+
+  | Resource | Configuration |
+  |---|---|
+  | Storage replication | Zone-redundant (ZRS) |
+  | Key Vault | Standard |
+  | Key Vault purge protection | Enabled |
+  | Cosmos DB zone redundancy | Disabled |
+  | Cosmos DB auto failover | Enabled |
+  | AI Search | Standard tier, 2 replicas, 1 partition |
+  | Log retention | 90 days |
+</Tab>
+
+<Tab title="Gold">
+  **Mission-critical workloads** -- Geo-zone-redundant storage, premium key vault, full Cosmos DB redundancy, and maximum search capacity.
+
+  | Resource | Configuration |
+  |---|---|
+  | Storage replication | Geo-zone-redundant (GZRS) |
+  | Key Vault | Premium (HSM-backed) |
+  | Key Vault purge protection | Enabled |
+  | Cosmos DB zone redundancy | Enabled |
+  | Cosmos DB auto failover | Enabled |
+  | AI Search | Standard tier, 3 replicas, 2 partitions |
+  | Log retention | 180 days |
+</Tab>
+</Tabs>
+
+---
+
+## Networking
+
+The stack supports three network security postures, matching the Azure portal's inbound access options.
+
+<Tabs>
+<Tab title="Public">
+  All resources are accessible over the public internet. No VNet, private endpoints, or VNet injection are created.
+
+  Best for quick prototyping and development without compliance constraints.
+</Tab>
+
+<Tab title="Selected Networks">
+  Public access is restricted to specified IP ranges. Private endpoints and VNet injection are deployed.
+
+  - Storage, Cosmos DB, AI Search, and Key Vault default to **Deny** with firewall IP rules
+  - VNet injection enables Agent APIs through a delegated subnet
+  - Private DNS zones are auto-created or you can supply existing ones
+</Tab>
+
+<Tab title="Disabled">
+  The most restrictive mode. **No public network access** for any resource.
+
+  - All traffic flows exclusively through private endpoints
+  - VNet injection with a dedicated agent subnet (delegated to `Microsoft.App/environments`)
+  - The Foundry account uses private endpoints for inbound access
+  - Agents operate within the customer VNet for full network isolation
+</Tab>
+</Tabs>
+
+### Private endpoints
+
+When using a private networking mode, private endpoints are created for:
+
+| Resource | Sub-resource |
+|---|---|
+| Storage Account | Blob |
+| Key Vault | Vault |
+| Cosmos DB | SQL |
+| AI Search | Search Service |
+| Foundry Account | Account (3 DNS zones) |
+
+<Tip>
+You can bring your own VNet, subnets, and DNS zones or let the stack auto-create them. The agent subnet requires a minimum size of /27 (recommended /24) and must be delegated to `Microsoft.App/environments`.
+</Tip>
+
+### VNet injection for agents
+
+When `network_security` is set to `selected_networks` or `disabled`, the stack configures VNet injection:
+
+- A dedicated subnet delegated to `Microsoft.App/environments`
+- The Foundry account is updated with `networkInjections` referencing the agent subnet
+- An account-level capability host binds the Foundry to the subnet
+- Agent runtime traffic flows through the customer VNet with full DNS and routing control
+
+---
+
+## Security
+
+The stack enforces managed identity authentication wherever possible:
+
+| Resource | Authentication |
+|---|---|
+| Storage Account | Managed Identity (shared access keys **disabled**) |
+| Cosmos DB | Managed Identity (local authentication **disabled**) |
+| AI Search | AAD + API Key (configurable) |
+| Key Vault | RBAC-based access |
+
+The Foundry account's system-assigned managed identity is granted:
+
+| Target Resource | Roles |
+|---|---|
+| Key Vault | Key Vault Secrets User |
+| Storage Account | Storage Blob Data Contributor |
+| Cosmos DB | Cosmos DB Operator, DocumentDB Account Contributor, SQL Data Contributor (data plane) |
+| AI Search | Search Index Data Contributor, Search Service Contributor |
+
+---
+
+## RBAC profiles
+
+You can assign Azure AD groups for **Reader** and **Contributor** access across all Foundry resources.
+
+<Tabs>
+<Tab title="Reader">
+| Resource | Role |
+|---|---|
+| Resource Group | Reader |
+| Foundry Account | Cognitive Services User |
+| Storage Account | Storage Blob Data Reader |
+| Key Vault | Key Vault Reader |
+| Cosmos DB | Cosmos DB Account Reader |
+| AI Search | Search Index Data Reader |
+</Tab>
+
+<Tab title="Contributor">
+| Resource | Role |
+|---|---|
+| Resource Group | Contributor |
+| Foundry Account | Cognitive Services Contributor |
+| Storage Account | Storage Blob Data Contributor |
+| Key Vault | Key Vault Contributor |
+| Cosmos DB | DocumentDB Account Contributor |
+| AI Search | Search Index Data Contributor + Search Service Contributor |
+</Tab>
+</Tabs>

@@ -2,6 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "aspen",
   "name": "TerraOps Docs",
+  "description": "Terraform modules, stacks, and infrastructure documentation for Azure cloud deployments",
   "colors": {
     "primary": "#d69000",
     "light": "#d69000",
@@ -11,8 +12,47 @@
     "default": "light"
   },
   "favicon": "/favicon.svg",
+  "background": {
+    "decoration": "gradient"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/geral-qempire"
+      }
+    ]
+  },
   "navigation": {
     "tabs": [
+      {
+        "tab": "Stacks",
+        "groups": [
+          {
+            "group": "OVERVIEW",
+            "icon": "cubes-stacked",
+            "pages": [
+              "pages/stacks/overview"
+            ]
+          },
+          {
+            "group": "GENAI STACKS (Legacy)",
+            "icon": "brain",
+            "pages": [
+              "pages/stacks/genai-hub",
+              "pages/stacks/genai-project"
+            ]
+          },
+          {
+            "group": "GENAI FOUNDRY STACKS",
+            "icon": "microchip-ai",
+            "pages": [
+              "pages/stacks/genai-foundry",
+              "pages/stacks/genai-foundry-project"
+            ]
+          }
+        ]
+      },
       {
         "tab": "DevOps",
         "groups": [
@@ -20,7 +60,6 @@
             "group": "GETTING STARTED",
             "icon": "https://mintlify-assets.b-cdn.net/compass-2.svg",
             "pages": [
-              "index",
               "pages/devops/introduction",
               "pages/devops/repositories"
             ]
@@ -86,11 +125,16 @@
       ]
     }
   },
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/pages/stacks/overview"
+    }
+  ],
   "logo": {
     "light": "/logo/TerraOpsLight.png",
     "dark": "/logo/TerraOpsDark.png"
   },
-  "navbar": {},
   "footer": {
     "socials": {
       "github": "https://github.com/geral-qempire",
