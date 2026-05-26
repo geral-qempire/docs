@@ -5,7 +5,7 @@ sidebarTitle: "Overview"
 description: "Terraform stacks for deploying production-ready Azure AI infrastructure with built-in networking, RBAC, and tiered environments."
 ---
 
-import { Container, Title, TitleLink, QuickstartItem } from '/snippets/home/utility.mdx';
+import { Container, Title } from '/snippets/home/utility.mdx';
 import { ProductTiles } from '/snippets/home/product-tiles.mdx';
 import { appCategories } from '/snippets/home/data.mdx';
 import { ProductCard } from '/snippets/home/product-cards.mdx';
@@ -59,13 +59,11 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
         The latest stacks for deploying Azure AI Foundry infrastructure with enterprise-grade security.
       </p>
     </div>
-    <div className="dark:hidden block">
     <CardGroup cols={3}>
         <ProductCard
           title="GenAI Foundry"
           description="AI Foundry account with VNet injection, managed identity auth, and private networking for agents"
           href="/pages/stacks/genai-foundry"
-          img="https://mintlify-assets.b-cdn.net/aspen-ai.svg"
           model="AI Foundry"
           type="Foundry"
         />
@@ -73,7 +71,6 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
           title="GenAI Foundry Project"
           description="Foundry project with agent capabilities, connections, and capability host"
           href="/pages/stacks/genai-foundry-project"
-          img="https://mintlify-assets.b-cdn.net/aspen-chat.svg"
           model="azapi"
           type="Foundry"
         />
@@ -81,40 +78,10 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
           title="GenAI Hub"
           description="Central hub with AI services, storage, key vault, and managed networking"
           href="/pages/stacks/genai-hub"
-          img="https://mintlify-assets.b-cdn.net/aspen-code.svg"
           model="AI Foundry"
           type="Hub"
         />
     </CardGroup>
-    </div>
-    <div className="dark:block hidden">
-    <CardGroup cols={3}>
-        <ProductCard
-          title="GenAI Foundry"
-          description="AI Foundry account with VNet injection, managed identity auth, and private networking for agents"
-          href="/pages/stacks/genai-foundry"
-          img="https://mintlify-assets.b-cdn.net/aspen-dark-ai.svg"
-          model="AI Foundry"
-          type="Foundry"
-        />
-        <ProductCard
-          title="GenAI Foundry Project"
-          description="Foundry project with agent capabilities, connections, and capability host"
-          href="/pages/stacks/genai-foundry-project"
-          img="https://mintlify-assets.b-cdn.net/aspen-dark-chat.svg"
-          model="azapi"
-          type="Foundry"
-        />
-        <ProductCard
-          title="GenAI Hub"
-          description="Central hub with AI services, storage, key vault, and managed networking"
-          href="/pages/stacks/genai-hub"
-          img="https://mintlify-assets.b-cdn.net/aspen-dark-code.svg"
-          model="AI Foundry"
-          type="Hub"
-        />
-    </CardGroup>
-    </div>
   </Container>
 
   <Container>
@@ -131,70 +98,5 @@ import { ProductCard } from '/snippets/home/product-cards.mdx';
       </p>
     </div>
     <ProductTiles categories={appCategories} hideButtons={false} />
-  </Container>
-
-  <Container>
-    <div className="flex flex-col w-full mb-5">
-      <Title>
-        Quick start
-      </Title>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-      <QuickstartItem
-        title="Deploy a GenAI Foundry"
-        description="Set up an AI Foundry account with VNet injection, Cosmos DB, AI Search, and managed identity"
-        icon={<Icon icon="microchip-ai" size="20" />}
-        href="/pages/stacks/genai-foundry"
-      />
-      <QuickstartItem
-        title="Add a Foundry Project"
-        description="Create a project with agent capabilities connected to your Foundry account"
-        icon={<Icon icon="diagram-project" size="20" />}
-        href="/pages/stacks/genai-foundry-project"
-      />
-      <QuickstartItem
-        title="DevOps workflows"
-        description="Branching strategies, CI/CD, and release processes"
-        icon={<Icon icon="code-branch" size="20" />}
-        href="/pages/devops/introduction"
-      />
-      <QuickstartItem
-        title="Repository structure"
-        description="Modules, stacks, and projects architecture"
-        icon={<Icon icon="folder-tree" size="20" />}
-        href="/pages/devops/repositories"
-      />
-    </div>
-  </Container>
-
-  <Container>
-    <div className="flex flex-col w-full mb-5">
-      <Title>
-        Resources
-      </Title>
-    </div>
-    <Columns cols={3}>
-      <Card
-        title="Stacks documentation"
-        icon="cubes-stacked"
-        href="/pages/stacks/genai-foundry"
-      >
-        Browse all available stacks with features, tiers, and usage examples
-      </Card>
-      <Card
-        title="DevOps guides"
-        icon="code-branch"
-        href="/pages/devops/introduction"
-      >
-        Standards, practices, and CI/CD workflows for terraform infrastructure
-      </Card>
-      <Card
-        title="GitHub"
-        icon="github"
-        href="https://github.com/geral-qempire"
-      >
-        Source repositories for modules, stacks, and projects
-      </Card>
-    </Columns>
   </Container>
 </div>
