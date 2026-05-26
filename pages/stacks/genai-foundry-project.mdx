@@ -6,6 +6,10 @@ description: "Foundry project with agent capabilities, connections to shared res
 
 The **GenAI Foundry Project** stack deploys an [Azure AI Foundry](https://learn.microsoft.com/en-us/azure/foundry/) project as a child of an existing GenAI Foundry account. Each project gets its own managed identity, connections to shared resources, and a capability host that enables the Agent Service.
 
+<Warning>
+**The parent GenAI Foundry stack deploy and destroy can take up to 180 minutes** when using private networking. This is due to Azure's internal VNet injection provisioning (managed Container Apps environment, network peering, and DNS forwarding). The project stack itself deploys in minutes, but the parent Foundry account must complete VNet injection and capability host creation first. Ensure the parent stack is fully deployed before running this stack.
+</Warning>
+
 ## Architecture
 
 The project creates the following resources on the parent Foundry account:

@@ -6,6 +6,10 @@ description: "Azure AI Foundry account with shared resources, VNet injection for
 
 The **GenAI Foundry** stack deploys an [Azure AI Foundry](https://learn.microsoft.com/en-us/azure/foundry/) account as the central infrastructure layer for your GenAI workloads. It provisions all dependent resources (storage, Cosmos DB, AI Search, Key Vault) with managed identity authentication and supports private networking with VNet injection for Agent APIs.
 
+<Warning>
+**Deploy and destroy operations can take up to 180 minutes** when using private networking (`selected_networks` or `disabled`). This is caused by Azure's internal provisioning of VNet injection infrastructure for the Agent Service — Azure provisions a managed Container Apps environment, configures network peering, and sets up DNS forwarding behind the scenes. These Azure-side operations are not visible in Terraform output but run asynchronously during the `networkInjections` update and capability host creation. Plan CI/CD pipeline timeouts accordingly.
+</Warning>
+
 ## Architecture
 
 The stack creates a single resource group containing:
